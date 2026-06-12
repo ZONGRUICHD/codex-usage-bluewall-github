@@ -113,20 +113,20 @@ function generateSVG(data: UsageData, days: number = 365): string {
   
   ${cells}
   
-  <text x="${SIDE_PADDING}" y="${HEADER_HEIGHT + grid_height + 20}" fill="#8b949e" font-size="11">Total: <tspan fill="#e6edf3">${data.statistics.total_tokens.toLocaleString()}</tspan> tokens</text>
-  <text x="${SIDE_PADDING + 250}" y="${HEADER_HEIGHT + grid_height + 20}" fill="#8b949e" font-size="11">Peak: <tspan fill="#e6edf3">${data.statistics.peak_tokens.toLocaleString()}</tspan> tokens</text>
-  <text x="${SIDE_PADDING + 500}" y="${HEADER_HEIGHT + grid_height + 20}" fill="#8b949e" font-size="11">Streak: <tspan fill="#58a6ff">${data.statistics.current_streak}</tspan> days</text>
-  <text x="${SIDE_PADDING}" y="${HEADER_HEIGHT + grid_height + 40}" fill="#8b949e" font-size="11">Active days: <tspan fill="#e6edf3">${data.statistics.total_days_active}</tspan></text>
-  <text x="${SIDE_PADDING + 250}" y="${HEADER_HEIGHT + grid_height + 40}" fill="#8b949e" font-size="11">Longest streak: <tspan fill="#58a6ff">${data.statistics.longest_streak}</tspan> days</text>
+  <text x="${SIDE_PADDING}" y="${HEADER_HEIGHT + gridHeight + 20}" fill="#8b949e" font-size="11">Total: <tspan fill="#e6edf3">${data.statistics.total_tokens.toLocaleString()}</tspan> tokens</text>
+  <text x="${SIDE_PADDING + 250}" y="${HEADER_HEIGHT + gridHeight + 20}" fill="#8b949e" font-size="11">Peak: <tspan fill="#e6edf3">${data.statistics.peak_tokens.toLocaleString()}</tspan> tokens</text>
+  <text x="${SIDE_PADDING + 500}" y="${HEADER_HEIGHT + gridHeight + 20}" fill="#8b949e" font-size="11">Streak: <tspan fill="#58a6ff">${data.statistics.current_streak}</tspan> days</text>
+  <text x="${SIDE_PADDING}" y="${HEADER_HEIGHT + gridHeight + 40}" fill="#8b949e" font-size="11">Active days: <tspan fill="#e6edf3">${data.statistics.total_days_active}</tspan></text>
+  <text x="${SIDE_PADDING + 250}" y="${HEADER_HEIGHT + gridHeight + 40}" fill="#8b949e" font-size="11">Longest streak: <tspan fill="#58a6ff">${data.statistics.longest_streak}</tspan> days</text>
   
-  <text x="${totalWidth - SIDE_PADDING - 200}" y="${HEADER_HEIGHT + grid_height + 20}" fill="#8b949e" font-size="10">Less</text>
-  <rect x="${totalWidth - SIDE_PADDING - 170}" y="${HEADER_HEIGHT + grid_height + 10}" width="10" height="10" fill="#161b22" rx="2" ry="2"/>
-  <rect x="${totalWidth - SIDE_PADDING - 155}" y="${HEADER_HEIGHT + grid_height + 10}" width="10" height="10" fill="#0f3264" rx="2" ry="2"/>
-  <rect x="${totalWidth - SIDE_PADDING - 140}" y="${HEADER_HEIGHT + grid_height + 10}" width="10" height="10" fill="#1976d2" rx="2" ry="2"/>
-  <rect x="${totalWidth - SIDE_PADDING - 125}" y="${HEADER_HEIGHT + grid_height + 10}" width="10" height="10" fill="#2878c8" rx="2" ry="2"/>
-  <rect x="${totalWidth - SIDE_PADDING - 110}" y="${HEADER_HEIGHT + grid_height + 10}" width="10" height="10" fill="#42a5f5" rx="2" ry="2"/>
-  <rect x="${totalWidth - SIDE_PADDING - 95}" y="${HEADER_HEIGHT + grid_height + 10}" width="10" height="10" fill="#90caf9" rx="2" ry="2"/>
-  <text x="${totalWidth - SIDE_PADDING - 80}" y="${HEADER_HEIGHT + grid_height + 20}" fill="#8b949e" font-size="10">More</text>
+  <text x="${totalWidth - SIDE_PADDING - 200}" y="${HEADER_HEIGHT + gridHeight + 20}" fill="#8b949e" font-size="10">Less</text>
+  <rect x="${totalWidth - SIDE_PADDING - 170}" y="${HEADER_HEIGHT + gridHeight + 10}" width="10" height="10" fill="#161b22" rx="2" ry="2"/>
+  <rect x="${totalWidth - SIDE_PADDING - 155}" y="${HEADER_HEIGHT + gridHeight + 10}" width="10" height="10" fill="#0f3264" rx="2" ry="2"/>
+  <rect x="${totalWidth - SIDE_PADDING - 140}" y="${HEADER_HEIGHT + gridHeight + 10}" width="10" height="10" fill="#1976d2" rx="2" ry="2"/>
+  <rect x="${totalWidth - SIDE_PADDING - 125}" y="${HEADER_HEIGHT + gridHeight + 10}" width="10" height="10" fill="#2878c8" rx="2" ry="2"/>
+  <rect x="${totalWidth - SIDE_PADDING - 110}" y="${HEADER_HEIGHT + gridHeight + 10}" width="10" height="10" fill="#42a5f5" rx="2" ry="2"/>
+  <rect x="${totalWidth - SIDE_PADDING - 95}" y="${HEADER_HEIGHT + gridHeight + 10}" width="10" height="10" fill="#90caf9" rx="2" ry="2"/>
+  <text x="${totalWidth - SIDE_PADDING - 80}" y="${HEADER_HEIGHT + gridHeight + 20}" fill="#8b949e" font-size="10">More</text>
   
 </svg>`;
 }
