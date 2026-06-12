@@ -1,139 +1,364 @@
 {
-  "generated_at": "2026-06-12T23:08:04.787569",
+  "schema_version": 2,
+  "generated_at": "2026-06-13T00:44:03.810748+08:00",
+  "device": "ZONGRUICHD",
   "tools_scanned": [
     "codex",
     "claude_code",
-    "mimocode"
+    "mimocode",
+    "opencode",
+    "hermes"
   ],
   "per_tool_summary": {
-    "codex": 173990902,
-    "claude_code": 1008180,
-    "mimocode": 0
+    "codex": 179317241,
+    "claude_code": 11511872,
+    "mimocode": 115204733,
+    "opencode": 0,
+    "hermes": 0
+  },
+  "per_agent_summary": {
+    "codex:cli": 53596676,
+    "codex:vscode": 125720565,
+    "claude_code:main": 11278004,
+    "claude_code:a5719ee4e9704233b": 233868,
+    "mimocode:main": 106626089,
+    "mimocode:checkpoint-writer-1": 8578644
+  },
+  "scan_status": {
+    "codex": {
+      "available": true,
+      "warning_count": 0
+    },
+    "claude_code": {
+      "available": true,
+      "warning_count": 0
+    },
+    "mimocode": {
+      "available": true,
+      "warning_count": 0
+    },
+    "opencode": {
+      "available": false,
+      "warning_count": 1
+    },
+    "hermes": {
+      "available": false,
+      "warning_count": 1
+    }
   },
   "statistics": {
-    "total_tokens": 174999082,
-    "peak_day": "2026-06-07",
-    "peak_tokens": 91219057,
-    "current_streak": 1,
-    "longest_streak": 6,
-    "total_days_active": 14
+    "total_tokens": 306033846,
+    "peak_day": "2026-06-12",
+    "peak_tokens": 91893121,
+    "current_streak": 9,
+    "longest_streak": 10,
+    "total_days_active": 19
   },
   "daily_usage": {
-    "2026-06-09": {
-      "input_tokens": 1540545,
-      "output_tokens": 492093,
-      "total_tokens": 2032638,
+    "2026-06-13": {
+      "input_tokens": 5980049,
+      "output_tokens": 50674,
+      "cache_read_tokens": 19886592,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 10882,
+      "total_tokens": 25919489,
+      "sessions": 128,
       "tools": {
-        "codex": 1573023,
-        "claude_code": 459615
+        "codex": 5326339,
+        "mimocode": 20593150
+      },
+      "agents": {
+        "codex:cli": 5326339,
+        "mimocode:main": 19133579,
+        "mimocode:checkpoint-writer-1": 1459571
+      }
+    },
+    "2026-06-09": {
+      "input_tokens": 6992460,
+      "output_tokens": 51860,
+      "cache_read_tokens": 2213312,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 7185,
+      "total_tokens": 9257632,
+      "sessions": 156,
+      "tools": {
+        "codex": 6584705,
+        "claude_code": 2672927
+      },
+      "agents": {
+        "codex:cli": 1573023,
+        "codex:vscode": 5011682,
+        "claude_code:main": 2672927
       }
     },
     "2026-06-08": {
-      "input_tokens": 7078004,
-      "output_tokens": 3010689,
-      "total_tokens": 10088693,
+      "input_tokens": 61329993,
+      "output_tokens": 334386,
+      "cache_read_tokens": 1874112,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 130344,
+      "total_tokens": 63538721,
+      "sessions": 585,
       "tools": {
-        "codex": 9991015,
-        "claude_code": 97678
+        "codex": 61500021,
+        "claude_code": 2038700
+      },
+      "agents": {
+        "codex:vscode": 51624276,
+        "codex:cli": 9875745,
+        "claude_code:main": 1804832,
+        "claude_code:a5719ee4e9704233b": 233868
       }
     },
     "2026-06-07": {
-      "input_tokens": 63866414,
-      "output_tokens": 27352643,
-      "total_tokens": 91219057,
+      "input_tokens": 34624587,
+      "output_tokens": 233435,
+      "cache_read_tokens": 5608832,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 97429,
+      "total_tokens": 40466854,
+      "sessions": 522,
       "tools": {
-        "codex": 91161135,
-        "claude_code": 57922
+        "codex": 34640447,
+        "claude_code": 5826407
+      },
+      "agents": {
+        "codex:vscode": 5910851,
+        "codex:cli": 28729596,
+        "claude_code:main": 5826407
       }
     },
     "2026-06-06": {
-      "input_tokens": 13471277,
-      "output_tokens": 5756987,
-      "total_tokens": 19228264,
+      "input_tokens": 18972731,
+      "output_tokens": 63862,
+      "cache_read_tokens": 125632,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 9232,
+      "total_tokens": 19162225,
+      "sessions": 183,
       "tools": {
         "codex": 18961721,
-        "claude_code": 266543
+        "claude_code": 200504
+      },
+      "agents": {
+        "codex:vscode": 18961721,
+        "claude_code:main": 200504
       }
     },
     "2026-06-05": {
-      "input_tokens": 229969,
-      "output_tokens": 90098,
-      "total_tokens": 320067,
+      "input_tokens": 316782,
+      "output_tokens": 3285,
+      "cache_read_tokens": 82176,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 426,
+      "total_tokens": 402243,
+      "sessions": 19,
       "tools": {
         "codex": 298725,
-        "claude_code": 21342
+        "claude_code": 103518
+      },
+      "agents": {
+        "codex:cli": 298725,
+        "claude_code:main": 103518
       }
     },
     "2026-06-02": {
-      "input_tokens": 351109,
-      "output_tokens": 150476,
+      "input_tokens": 493738,
+      "output_tokens": 7847,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 4567,
       "total_tokens": 501585,
+      "sessions": 17,
       "tools": {
         "codex": 501585
+      },
+      "agents": {
+        "codex:cli": 501585
       }
     },
     "2026-05-30": {
-      "input_tokens": 508258,
-      "output_tokens": 217825,
-      "total_tokens": 726083,
+      "input_tokens": 18371442,
+      "output_tokens": 57321,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 24343,
+      "total_tokens": 18428763,
+      "sessions": 148,
       "tools": {
-        "codex": 726083
+        "codex": 18428763
+      },
+      "agents": {
+        "codex:vscode": 18428763
       }
     },
     "2026-05-29": {
-      "input_tokens": 28806043,
-      "output_tokens": 12345447,
-      "total_tokens": 41151490,
+      "input_tokens": 102958,
+      "output_tokens": 1079,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 33,
+      "total_tokens": 104037,
+      "sessions": 5,
       "tools": {
-        "codex": 41151490
+        "codex": 104037
+      },
+      "agents": {
+        "codex:vscode": 104037
+      }
+    },
+    "2026-05-31": {
+      "input_tokens": 14804676,
+      "output_tokens": 35861,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 15647,
+      "total_tokens": 14840537,
+      "sessions": 101,
+      "tools": {
+        "codex": 14840537
+      },
+      "agents": {
+        "codex:vscode": 14840537
+      }
+    },
+    "2026-06-01": {
+      "input_tokens": 8474090,
+      "output_tokens": 30146,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 15257,
+      "total_tokens": 8504236,
+      "sessions": 82,
+      "tools": {
+        "codex": 8504236
+      },
+      "agents": {
+        "codex:vscode": 8504236
       }
     },
     "2026-05-28": {
-      "input_tokens": 50430,
-      "output_tokens": 21614,
+      "input_tokens": 70903,
+      "output_tokens": 1141,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 136,
       "total_tokens": 72044,
+      "sessions": 4,
       "tools": {
         "codex": 72044
+      },
+      "agents": {
+        "codex:cli": 72044
       }
     },
     "2026-05-27": {
-      "input_tokens": 416640,
-      "output_tokens": 178562,
+      "input_tokens": 588137,
+      "output_tokens": 7065,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 1844,
       "total_tokens": 595202,
+      "sessions": 22,
       "tools": {
         "codex": 595202
+      },
+      "agents": {
+        "codex:vscode": 595202
       }
     },
     "2026-05-26": {
-      "input_tokens": 1217482,
-      "output_tokens": 521778,
+      "input_tokens": 1725284,
+      "output_tokens": 13976,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 5213,
       "total_tokens": 1739260,
+      "sessions": 49,
       "tools": {
         "codex": 1739260
+      },
+      "agents": {
+        "codex:vscode": 1739260
       }
     },
     "2026-05-24": {
-      "input_tokens": 5053730,
-      "output_tokens": 2165889,
-      "total_tokens": 7219619,
+      "input_tokens": 5056196,
+      "output_tokens": 43269,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 14859,
+      "total_tokens": 5099465,
+      "sessions": 136,
       "tools": {
-        "codex": 7219619
+        "codex": 5099465
+      },
+      "agents": {
+        "codex:cli": 5099465
+      }
+    },
+    "2026-05-25": {
+      "input_tokens": 2113185,
+      "output_tokens": 6969,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 2645,
+      "total_tokens": 2120154,
+      "sessions": 21,
+      "tools": {
+        "codex": 2120154
+      },
+      "agents": {
+        "codex:cli": 2120154
       }
     },
     "2026-06-10": {
       "input_tokens": 98678,
       "output_tokens": 3542,
-      "total_tokens": 102220,
+      "cache_read_tokens": 244288,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 0,
+      "total_tokens": 346508,
+      "sessions": 4,
       "tools": {
-        "claude_code": 102220
+        "claude_code": 346508
+      },
+      "agents": {
+        "claude_code:main": 346508
       }
     },
     "2026-06-12": {
-      "input_tokens": 2539,
-      "output_tokens": 321,
-      "total_tokens": 2860,
+      "input_tokens": 1739665,
+      "output_tokens": 102982,
+      "cache_read_tokens": 90024896,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 25578,
+      "total_tokens": 91893121,
+      "sessions": 568,
       "tools": {
-        "claude_code": 2860
+        "claude_code": 323308,
+        "mimocode": 91569813
+      },
+      "agents": {
+        "claude_code:main": 323308,
+        "mimocode:main": 85258203,
+        "mimocode:checkpoint-writer-1": 6311610
+      }
+    },
+    "2026-06-11": {
+      "input_tokens": 237185,
+      "output_tokens": 26315,
+      "cache_read_tokens": 2771648,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 6622,
+      "total_tokens": 3041770,
+      "sessions": 62,
+      "tools": {
+        "mimocode": 3041770
+      },
+      "agents": {
+        "mimocode:main": 2234307,
+        "mimocode:checkpoint-writer-1": 807463
       }
     }
   }

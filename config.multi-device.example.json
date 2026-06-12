@@ -1,0 +1,16 @@
+{
+  "username": "zongrui",
+  "devices": {
+    "desktop": {
+      "name": "Desktop PC",
+      "snapshot": "data/ai-usage-desktop.json"
+    },
+    "laptop": {
+      "name": "Laptop",
+      "snapshot": "data/ai-usage-laptop.json"
+    }
+  },
+  "output_svg": "assets/ai-blue-wall.svg",
+  "output_data": "data/ai-usage.json",
+  "days": 365
+}

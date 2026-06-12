@@ -4,6 +4,24 @@ const GITHUB_RAW_URL = 'https://raw.githubusercontent.com';
 const REPO_OWNER = 'zong1024';
 const REPO_NAME = 'codex-usage-bluewall-github';
 
+function escapeXml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&apos;');
+}
+
+function displayToolName(tool) {
+  return {
+    claude_code: 'Claude Code',
+    mimocode: 'MiMo Code',
+    opencode: 'OpenCode',
+    hermes: 'Hermes'
+  }[tool] || tool.charAt(0).toUpperCase() + tool.slice(1);
+}
+
 function getColorIntensity(tokens, maxTokens) {
   if (tokens === 0) return '#161b22';
   if (maxTokens === 0) return '#0f3264';
@@ -44,16 +62,21 @@ function generateSVG(data, days) {
   const totalHeight = HEADER_HEIGHT + gridHeight + FOOTER_HEIGHT;
 
   let cells = '';
-  const today = new Date();
+  const dataDates = Object.keys(data.daily_usage || {}).sort();
+  const currentUtcDate = new Date().toISOString().split('T')[0];
+  const endDate = dataDates.length
+    ? [currentUtcDate, dataDates[dataDates.length - 1]].sort().pop()
+    : currentUtcDate;
+  const today = new Date(endDate + 'T00:00:00Z');
   const startDate = new Date(today);
-  startDate.setDate(startDate.getDate() - days);
-  while (startDate.getDay() !== 0) startDate.setDate(startDate.getDate() - 1);
+  startDate.setUTCDate(startDate.getUTCDate() - days);
+  while (startDate.getUTCDay() !== 0) startDate.setUTCDate(startDate.getUTCDate() - 1);
 
   let currentDate = new Date(startDate);
   let week = 0;
 
   while (currentDate <= today) {
-    const dayOfWeek = currentDate.getDay();
+    const dayOfWeek = currentDate.getUTCDay();
     const dateStr = currentDate.toISOString().split('T')[0];
     const tokens = data.daily_usage[dateStr] ? data.daily_usage[dateStr].total_tokens : 0;
     const color = getColorIntensity(tokens, maxTokens);
@@ -63,20 +86,21 @@ function generateSVG(data, days) {
 
     cells += '<rect x="' + x + '" y="' + y + '" width="' + CELL_SIZE + '" height="' + CELL_SIZE + '" fill="' + color + '" rx="2" ry="2"><title>' + dateStr + ': ' + tokens.toLocaleString() + ' tokens</title></rect>';
 
-    currentDate.setDate(currentDate.getDate() + 1);
-    if (currentDate.getDay() === 0) week++;
+    currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+    if (currentDate.getUTCDay() === 0) week++;
   }
 
   const toolBreakdown = Object.entries(data.per_tool_summary || {})
-    .map(([tool, tokens]) => tool + ': ' + tokens.toLocaleString())
+    .filter(([, tokens]) => tokens > 0)
+    .map(([tool, tokens]) => displayToolName(tool) + ': ' + tokens.toLocaleString())
     .join(' | ');
 
   return '<?xml version="1.0" encoding="UTF-8"?>' +
     '<svg width="' + totalWidth + '" height="' + totalHeight + '" viewBox="0 0 ' + totalWidth + ' ' + totalHeight + '" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, \'Segoe UI\', Helvetica, Arial, sans-serif">' +
     '<rect width="' + totalWidth + '" height="' + totalHeight + '" fill="#0d1117" rx="6" ry="6"/>' +
     '<text x="' + SIDE_PADDING + '" y="25" fill="#e6edf3" font-size="16" font-weight="600">AI Coding Activity</text>' +
-    '<text x="' + SIDE_PADDING + '" y="45" fill="#8b949e" font-size="12">Token usage across Codex, Claude Code, MimoCode</text>' +
-    '<text x="' + SIDE_PADDING + '" y="65" fill="#58a6ff" font-size="11">' + toolBreakdown + '</text>' +
+    '<text x="' + SIDE_PADDING + '" y="45" fill="#8b949e" font-size="12">Token usage across devices, tools, and agents</text>' +
+    '<text x="' + SIDE_PADDING + '" y="65" fill="#58a6ff" font-size="11">' + escapeXml(toolBreakdown) + '</text>' +
     '<text x="' + (SIDE_PADDING - 5) + '" y="' + (HEADER_HEIGHT + 10) + '" fill="#8b949e" font-size="10" text-anchor="end">Sun</text>' +
     '<text x="' + (SIDE_PADDING - 5) + '" y="' + (HEADER_HEIGHT + 10 + (CELL_SIZE + CELL_PADDING) * 2) + '" fill="#8b949e" font-size="10" text-anchor="end">Tue</text>' +
     '<text x="' + (SIDE_PADDING - 5) + '" y="' + (HEADER_HEIGHT + 10 + (CELL_SIZE + CELL_PADDING) * 4) + '" fill="#8b949e" font-size="10" text-anchor="end">Thu</text>' +
@@ -116,7 +140,8 @@ function fetchJSON(url) {
 
 module.exports = async (req, res) => {
   try {
-    const days = parseInt(req.query.days) || 365;
+    const requestedDays = parseInt(req.query.days, 10) || 365;
+    const days = Math.max(7, Math.min(requestedDays, 365));
     const url = GITHUB_RAW_URL + '/' + REPO_OWNER + '/' + REPO_NAME + '/main/data/ai-usage.json';
     
     const data = await fetchJSON(url);

@@ -1,10 +1,12 @@
 # AI Coding Blue Wall
 
-Track your token usage across multiple AI coding tools (Codex, Claude Code, MimoCode) and display it as a beautiful blue wall on your GitHub Profile.
+Track token usage across devices, operating systems, coding tools, and sub-agents, then display it as a blue activity wall on your GitHub Profile.
 
 ## Features
 
-- 📊 Scan token usage from Codex, Claude Code, MimoCode
+- 📊 Scan Codex, Claude Code, MiMo Code, OpenCode, and Hermes Agent
+- 🖥️ Merge snapshots from Windows, Linux, and macOS devices
+- 🤖 Preserve per-tool and per-agent usage summaries
 - 🎨 Generate GitHub-style blue heatmap SVG
 - ☁️ Deploy to Vercel for automatic updates
 - 🔒 Secure: only aggregated data, no secrets
@@ -47,7 +49,7 @@ Track your token usage across multiple AI coding tools (Codex, Claude Code, Mimo
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/zongrui/codex-usage-bluewall-github.git
+git clone https://github.com/zong1024/codex-usage-bluewall-github.git
 cd codex-usage-bluewall-github
 ```
 
@@ -78,47 +80,59 @@ Add to your GitHub Profile README:
 ```markdown
 ## AI Coding Activity
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://your-project.vercel.app/api/svg">
-  <img alt="AI Coding Blue Wall" src="https://your-project.vercel.app/api/svg">
-</picture>
+![AI Coding Blue Wall](https://your-project.vercel.app/api/svg)
 ```
 
 ## Multi-Device Setup
 
-### Windows
+Create one snapshot on each device:
+
+```bash
+./scripts/update-multi-device.sh --device desktop --scan-only
+```
+
+Windows PowerShell:
 
 ```powershell
-# Scan and push
-.\scripts\update.ps1 --commit --push
+.\scripts\update-multi-device.ps1 -Device desktop -ScanOnly
 ```
 
-### Linux/macOS
+This creates `data/ai-usage-desktop.json`. Transfer or commit each device
+snapshot, then merge them on one machine:
 
 ```bash
-# Scan and push
-./scripts/update-full.sh --commit --push
+./scripts/update-multi-device.sh --merge-only \
+  --input data/ai-usage-desktop.json \
+  --input data/ai-usage-laptop.json
 ```
 
-### Cron Job (Linux)
+Duplicate snapshots with the same device name are not double-counted; the newest
+snapshot wins.
+
+### Custom Storage Paths
 
 ```bash
-# Add to crontab
-0 0 * * * cd /path/to/project && ./scripts/update-full.sh --commit --push
+python3 scripts/scan_all_tools.py \
+  --codex-db /path/to/state_5.sqlite \
+  --claude-dir /path/to/.claude/projects \
+  --mimocode-db /path/to/mimocode.db \
+  --opencode-path /path/to/opencode.db \
+  --hermes-db /path/to/state.db
 ```
-
-### Task Scheduler (Windows)
-
-Create a scheduled task to run `update.ps1` daily.
 
 ## Supported Tools
 
 | Tool | Data Source | Status |
 |------|------------|--------|
-| Codex | `~/.codex/state_5.sqlite` | ✅ Supported |
+| Codex | `~/.codex/state_*.sqlite` + rollout JSONL | ✅ Supported |
 | Claude Code | `~/.claude/projects/*.jsonl` | ✅ Supported |
-| MimoCode | `~/.local/share/mimocode/mimocode.db` | ⚠️ Limited |
-| Hermes Agent | `~/.hermes/` | 🔜 Planned |
+| MiMo Code | `~/.local/share/mimocode/mimocode.db` | ✅ Supported |
+| OpenCode | `~/.local/share/opencode/` SQLite or JSON storage | ✅ Supported |
+| Hermes Agent | `~/.hermes/state.db` and profile databases | ✅ Supported |
+
+Cache-read, cache-write, reasoning, and sub-agent tokens are included when the
+source tool records them. MiMo Code sessions imported from Claude Code are
+excluded to prevent double counting.
 
 ## Configuration
 
