@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-06-13T01:07:11.062851+08:00",
+  "generated_at": "2026-06-13T01:14:30.862592+08:00",
   "merged_from": [
     "ZONGRUICHD",
     "windows-main"
   ],
   "source_files": [
-    "data/ai-usage.json",
+    "data/ai-usage-ZONGRUICHD.json",
     "data/ai-usage-windows-main.json"
   ],
   "tools_scanned": [
