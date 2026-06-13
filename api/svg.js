@@ -101,8 +101,12 @@ function generateSVG(data, days, cloudActivity = {}) {
   const totalHeight = HEADER_HEIGHT + gridHeight + FOOTER_HEIGHT;
 
   let cells = '';
-  const today = new Date();
-  today.setUTCHours(0, 0, 0, 0);
+  const knownDates = [
+    new Date().toISOString().split('T')[0],
+    ...Object.keys(data.daily_usage || {}),
+    ...Object.keys(cloudActivity || {})
+  ].sort();
+  const today = new Date(knownDates[knownDates.length - 1] + 'T00:00:00Z');
   const startDate = new Date(today);
   startDate.setUTCDate(startDate.getUTCDate() - days);
   while (startDate.getUTCDay() !== 0) startDate.setUTCDate(startDate.getUTCDate() - 1);
@@ -170,6 +174,10 @@ function fetchJSON(url) {
       let data = '';
       res.on('data', (chunk) => data += chunk);
       res.on('end', () => {
+        if (res.statusCode < 200 || res.statusCode >= 300) {
+          reject(new Error('HTTP ' + res.statusCode + ' for ' + url));
+          return;
+        }
         try {
           resolve(JSON.parse(data));
         } catch (e) {
@@ -206,4 +214,5 @@ async function handler(req, res) {
 }
 
 module.exports = handler;
+module.exports.calculateActivityStatistics = calculateActivityStatistics;
 module.exports.generateSVG = generateSVG;
