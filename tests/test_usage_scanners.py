@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from scripts.merge_devices import merge_daily_usage
+from scripts.render_blue_wall import calculate_activity_streaks, get_color_intensity
 from scripts.scan_all_tools import (
     scan_claude_code,
     scan_codex,
@@ -321,6 +322,21 @@ class UsageScannerTests(unittest.TestCase):
         self.assertEqual(
             merged["agents"], {"codex:cli": 10, "hermes:telegram": 30}
         )
+
+    def test_cloud_activity_extends_calendar_without_adding_tokens(self):
+        statistics = calculate_activity_streaks(
+            {
+                "2026-01-01",
+                "2026-01-02",
+                "2026-01-04",
+                "2026-01-05",
+                "2026-01-06",
+            }
+        )
+        self.assertEqual(statistics["total_days_active"], 5)
+        self.assertEqual(statistics["longest_streak"], 3)
+        self.assertEqual(get_color_intensity(0, 100, 25), "#2878c8")
+        self.assertEqual(get_color_intensity(0, 100, 0), "#161b22")
 
 
 if __name__ == "__main__":

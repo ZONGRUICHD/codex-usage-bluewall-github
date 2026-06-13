@@ -22,20 +22,23 @@ def load_usage_data(data_path: Path) -> dict:
         return json.load(f)
 
 
-def get_color_intensity(tokens: int, max_tokens: int) -> str:
+def get_color_intensity(
+    tokens: int, max_tokens: int, cloud_usage_percent: float = 0
+) -> str:
     """
     Get blue color intensity based on token count.
 
     Returns CSS color string with varying blue intensity.
     """
-    if tokens == 0:
+    if tokens == 0 and cloud_usage_percent <= 0:
         return "#161b22"  # Dark gray for no activity
 
-    if max_tokens == 0:
-        return "#0e4429"  # Default low activity
-
-    # Calculate intensity (0-1)
-    intensity = min(tokens / max_tokens, 1.0)
+    if tokens > 0 and max_tokens > 0:
+        # A square-root scale keeps ordinary active days visible when one
+        # unusually large day would otherwise flatten the whole calendar.
+        intensity = max(0.12, min((tokens / max_tokens) ** 0.5, 1.0))
+    else:
+        intensity = max(0.12, min((cloud_usage_percent / 100) ** 0.5, 1.0))
 
     # Blue color palette (dark to light)
     colors = [
@@ -65,6 +68,7 @@ def generate_svg(
     username: str,
     days: int = 365,
     per_tool_summary: Optional[dict] = None,
+    daily_cloud_activity: Optional[dict] = None,
 ) -> str:
     """
     Generate a GitHub-style blue wall SVG.
@@ -119,14 +123,22 @@ def generate_svg(
 
         date_str = current_date.strftime("%Y-%m-%d")
         tokens = daily_usage.get(date_str, {}).get("total_tokens", 0)
-        color = get_color_intensity(tokens, max_tokens)
+        cloud_usage = (daily_cloud_activity or {}).get(date_str, 0)
+        color = get_color_intensity(tokens, max_tokens, cloud_usage)
 
         x = side_padding + week * (cell_size + cell_padding)
         y = header_height + day_of_week * (cell_size + cell_padding)
 
-        cells.append(f'<rect x="{x}" y="{y}" width="{cell_size}" height="{cell_size}" '
-                    f'fill="{color}" rx="2" ry="2">'
-                    f'<title>{date_str}: {tokens:,} tokens</title></rect>')
+        if tokens:
+            title = f"{date_str}: {tokens:,} tokens"
+        elif cloud_usage:
+            title = f"{date_str}: Codex cloud usage {cloud_usage:g}%"
+        else:
+            title = f"{date_str}: no activity"
+        cells.append(
+            f'<rect x="{x}" y="{y}" width="{cell_size}" height="{cell_size}" '
+            f'fill="{color}" rx="2" ry="2"><title>{title}</title></rect>'
+        )
 
         # Move to next day
         current_date += timedelta(days=1)
@@ -136,8 +148,19 @@ def generate_svg(
     # Format statistics
     total_tokens = f"{statistics['total_tokens']:,}"
     peak_tokens = f"{statistics['peak_tokens']:,}"
-    current_streak = str(statistics['current_streak'])
-    longest_streak = str(statistics['longest_streak'])
+    active_dates = {
+        date_str
+        for date_str, usage in daily_usage.items()
+        if usage.get("total_tokens", 0) > 0
+    }
+    active_dates.update(
+        date_str
+        for date_str, usage in (daily_cloud_activity or {}).items()
+        if usage > 0
+    )
+    activity_stats = calculate_activity_streaks(active_dates)
+    current_streak = str(activity_stats["current_streak"])
+    longest_streak = str(activity_stats["longest_streak"])
     tool_breakdown = " | ".join(
         f"{tool}: {tokens:,}"
         for tool, tokens in (per_tool_summary or {}).items()
@@ -205,6 +228,28 @@ def generate_svg(
     return svg
 
 
+def calculate_activity_streaks(active_dates: set[str]) -> dict:
+    parsed_dates = sorted(datetime.strptime(value, "%Y-%m-%d").date() for value in active_dates)
+    longest_streak = 0
+    streak = 0
+    previous = None
+    for current in parsed_dates:
+        streak = streak + 1 if previous and current - previous == timedelta(days=1) else 1
+        longest_streak = max(longest_streak, streak)
+        previous = current
+
+    today = datetime.now().date()
+    current_streak = 0
+    while (today - timedelta(days=current_streak)).isoformat() in active_dates:
+        current_streak += 1
+
+    return {
+        "current_streak": current_streak,
+        "longest_streak": longest_streak,
+        "total_days_active": len(active_dates),
+    }
+
+
 def save_svg(svg_content: str, output_path: Path):
     """Save SVG content to file."""
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -218,7 +263,7 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="Generate blue wall SVG")
-    parser.add_argument("--data", type=str, default="data/codex-usage.json", help="Input data file path")
+    parser.add_argument("--data", type=str, default="data/ai-usage.json", help="Input data file path")
     parser.add_argument("--output", type=str, default="assets/codex-blue-wall.svg", help="Output SVG file path")
     parser.add_argument("--username", type=str, default="user", help="GitHub username")
     parser.add_argument("--days", type=int, default=365, help="Number of days to show")
@@ -233,6 +278,12 @@ def main():
 
     print(f"Loading usage data from: {data_path}")
     data = load_usage_data(data_path)
+    cloud_activity_path = data_path.parent / "codex-cloud-activity.json"
+    daily_cloud_activity = {}
+    if cloud_activity_path.exists():
+        daily_cloud_activity = load_usage_data(cloud_activity_path).get(
+            "daily_usage_percent", {}
+        )
 
     # Generate SVG
     svg_content = generate_svg(
@@ -241,6 +292,7 @@ def main():
         args.username,
         args.days,
         data.get("per_tool_summary"),
+        daily_cloud_activity,
     )
 
     # Save SVG

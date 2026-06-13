@@ -22,11 +22,12 @@ function displayToolName(tool) {
   }[tool] || tool.charAt(0).toUpperCase() + tool.slice(1);
 }
 
-function getColorIntensity(tokens, maxTokens) {
-  if (tokens === 0) return '#161b22';
-  if (maxTokens === 0) return '#0f3264';
+function getColorIntensity(tokens, maxTokens, cloudUsagePercent = 0) {
+  if (tokens === 0 && cloudUsagePercent <= 0) return '#161b22';
 
-  const intensity = Math.min(tokens / maxTokens, 1.0);
+  const intensity = tokens > 0 && maxTokens > 0
+    ? Math.max(0.12, Math.min(Math.sqrt(tokens / maxTokens), 1.0))
+    : Math.max(0.12, Math.min(Math.sqrt(cloudUsagePercent / 100), 1.0));
   const colors = [
     [15, 50, 100],
     [25, 80, 160],
@@ -47,7 +48,45 @@ function getColorIntensity(tokens, maxTokens) {
   return '#' + r.toString(16).padStart(2, '0') + g.toString(16).padStart(2, '0') + b.toString(16).padStart(2, '0');
 }
 
-function generateSVG(data, days) {
+function calculateActivityStatistics(data, cloudActivity) {
+  const activeDates = new Set(
+    Object.entries(data.daily_usage || {})
+      .filter(([, usage]) => usage.total_tokens > 0)
+      .map(([date]) => date)
+  );
+  for (const [date, usagePercent] of Object.entries(cloudActivity || {})) {
+    if (usagePercent > 0) activeDates.add(date);
+  }
+
+  const dates = [...activeDates].sort();
+  let longestStreak = 0;
+  let streak = 0;
+  let previous = null;
+  for (const date of dates) {
+    const current = new Date(date + 'T00:00:00Z');
+    streak = previous && current - previous === 86400000 ? streak + 1 : 1;
+    longestStreak = Math.max(longestStreak, streak);
+    previous = current;
+  }
+
+  const today = new Date();
+  today.setUTCHours(0, 0, 0, 0);
+  let currentStreak = 0;
+  while (true) {
+    const date = new Date(today);
+    date.setUTCDate(date.getUTCDate() - currentStreak);
+    if (!activeDates.has(date.toISOString().split('T')[0])) break;
+    currentStreak++;
+  }
+
+  return {
+    currentStreak,
+    longestStreak,
+    totalDaysActive: activeDates.size
+  };
+}
+
+function generateSVG(data, days, cloudActivity = {}) {
   const CELL_SIZE = 12;
   const CELL_PADDING = 3;
   const HEADER_HEIGHT = 80;
@@ -75,12 +114,18 @@ function generateSVG(data, days) {
     const dayOfWeek = currentDate.getUTCDay();
     const dateStr = currentDate.toISOString().split('T')[0];
     const tokens = data.daily_usage[dateStr] ? data.daily_usage[dateStr].total_tokens : 0;
-    const color = getColorIntensity(tokens, maxTokens);
+    const cloudUsage = cloudActivity[dateStr] || 0;
+    const color = getColorIntensity(tokens, maxTokens, cloudUsage);
 
     const x = SIDE_PADDING + week * (CELL_SIZE + CELL_PADDING);
     const y = HEADER_HEIGHT + dayOfWeek * (CELL_SIZE + CELL_PADDING);
 
-    cells += '<rect x="' + x + '" y="' + y + '" width="' + CELL_SIZE + '" height="' + CELL_SIZE + '" fill="' + color + '" rx="2" ry="2"><title>' + dateStr + ': ' + tokens.toLocaleString() + ' tokens</title></rect>';
+    const title = tokens > 0
+      ? dateStr + ': ' + tokens.toLocaleString() + ' tokens'
+      : cloudUsage > 0
+        ? dateStr + ': Codex cloud usage ' + cloudUsage.toLocaleString() + '%'
+        : dateStr + ': no activity';
+    cells += '<rect x="' + x + '" y="' + y + '" width="' + CELL_SIZE + '" height="' + CELL_SIZE + '" fill="' + color + '" rx="2" ry="2"><title>' + title + '</title></rect>';
 
     currentDate.setUTCDate(currentDate.getUTCDate() + 1);
     if (currentDate.getUTCDay() === 0) week++;
@@ -90,6 +135,7 @@ function generateSVG(data, days) {
     .filter(([, tokens]) => tokens > 0)
     .map(([tool, tokens]) => displayToolName(tool) + ': ' + tokens.toLocaleString())
     .join(' | ');
+  const activityStatistics = calculateActivityStatistics(data, cloudActivity);
 
   return '<?xml version="1.0" encoding="UTF-8"?>' +
     '<svg width="' + totalWidth + '" height="' + totalHeight + '" viewBox="0 0 ' + totalWidth + ' ' + totalHeight + '" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, \'Segoe UI\', Helvetica, Arial, sans-serif">' +
@@ -104,9 +150,9 @@ function generateSVG(data, days) {
     cells +
     '<text x="' + SIDE_PADDING + '" y="' + (HEADER_HEIGHT + gridHeight + 20) + '" fill="#8b949e" font-size="11">Total: <tspan fill="#e6edf3">' + data.statistics.total_tokens.toLocaleString() + '</tspan> tokens</text>' +
     '<text x="' + (SIDE_PADDING + 250) + '" y="' + (HEADER_HEIGHT + gridHeight + 20) + '" fill="#8b949e" font-size="11">Peak: <tspan fill="#e6edf3">' + data.statistics.peak_tokens.toLocaleString() + '</tspan> tokens</text>' +
-    '<text x="' + (SIDE_PADDING + 500) + '" y="' + (HEADER_HEIGHT + gridHeight + 20) + '" fill="#8b949e" font-size="11">Streak: <tspan fill="#58a6ff">' + data.statistics.current_streak + '</tspan> days</text>' +
-    '<text x="' + SIDE_PADDING + '" y="' + (HEADER_HEIGHT + gridHeight + 40) + '" fill="#8b949e" font-size="11">Active days: <tspan fill="#e6edf3">' + data.statistics.total_days_active + '</tspan></text>' +
-    '<text x="' + (SIDE_PADDING + 250) + '" y="' + (HEADER_HEIGHT + gridHeight + 40) + '" fill="#8b949e" font-size="11">Longest streak: <tspan fill="#58a6ff">' + data.statistics.longest_streak + '</tspan> days</text>' +
+    '<text x="' + (SIDE_PADDING + 500) + '" y="' + (HEADER_HEIGHT + gridHeight + 20) + '" fill="#8b949e" font-size="11">Streak: <tspan fill="#58a6ff">' + activityStatistics.currentStreak + '</tspan> days</text>' +
+    '<text x="' + SIDE_PADDING + '" y="' + (HEADER_HEIGHT + gridHeight + 40) + '" fill="#8b949e" font-size="11">Active days: <tspan fill="#e6edf3">' + activityStatistics.totalDaysActive + '</tspan></text>' +
+    '<text x="' + (SIDE_PADDING + 250) + '" y="' + (HEADER_HEIGHT + gridHeight + 40) + '" fill="#8b949e" font-size="11">Longest streak: <tspan fill="#58a6ff">' + activityStatistics.longestStreak + '</tspan> days</text>' +
     '<text x="' + (totalWidth - SIDE_PADDING - 200) + '" y="' + (HEADER_HEIGHT + gridHeight + 20) + '" fill="#8b949e" font-size="10">Less</text>' +
     '<rect x="' + (totalWidth - SIDE_PADDING - 170) + '" y="' + (HEADER_HEIGHT + gridHeight + 10) + '" width="10" height="10" fill="#161b22" rx="2" ry="2"/>' +
     '<rect x="' + (totalWidth - SIDE_PADDING - 155) + '" y="' + (HEADER_HEIGHT + gridHeight + 10) + '" width="10" height="10" fill="#0f3264" rx="2" ry="2"/>' +
@@ -134,14 +180,21 @@ function fetchJSON(url) {
   });
 }
 
-module.exports = async (req, res) => {
+async function handler(req, res) {
   try {
     const requestedDays = parseInt(req.query.days, 10) || 365;
     const days = Math.max(7, Math.min(requestedDays, 365));
-    const url = GITHUB_RAW_URL + '/' + REPO_OWNER + '/' + REPO_NAME + '/main/data/ai-usage.json';
+    const dataRoot = GITHUB_RAW_URL + '/' + REPO_OWNER + '/' + REPO_NAME + '/main/data/';
     
-    const data = await fetchJSON(url);
-    const svg = generateSVG(data, days);
+    const [data, cloudActivityData] = await Promise.all([
+      fetchJSON(dataRoot + 'ai-usage.json'),
+      fetchJSON(dataRoot + 'codex-cloud-activity.json').catch(() => ({}))
+    ]);
+    const svg = generateSVG(
+      data,
+      days,
+      cloudActivityData.daily_usage_percent || {}
+    );
     
     res.setHeader('Content-Type', 'image/svg+xml');
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate');
@@ -150,4 +203,7 @@ module.exports = async (req, res) => {
     console.error('Error:', error);
     res.status(500).json({ error: 'Failed to generate SVG' });
   }
-};
+}
+
+module.exports = handler;
+module.exports.generateSVG = generateSVG;
