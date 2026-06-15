@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-06-13T01:23:09.750673+08:00",
+  "generated_at": "2026-06-16T01:15:20.358361+08:00",
   "merged_from": [
     "ZONGRUICHD",
     "windows-main"
@@ -36,7 +36,7 @@
     "total_tokens": 1528444589,
     "peak_day": "2026-06-08",
     "peak_tokens": 289450743,
-    "current_streak": 9,
+    "current_streak": 0,
     "longest_streak": 20,
     "total_days_active": 39
   },
