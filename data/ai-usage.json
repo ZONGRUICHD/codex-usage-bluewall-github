@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-06-22T01:15:25.964749+08:00",
+  "generated_at": "2026-06-23T18:00:27.034970+08:00",
   "merged_from": [
     "ZONGRUICHD",
     "windows-main"
@@ -17,7 +17,7 @@
     "opencode"
   ],
   "per_tool_summary": {
-    "codex": 1410339215,
+    "codex": 1441219843,
     "claude_code": 11511872,
     "mimocode": 115204733,
     "opencode": 0,
@@ -25,7 +25,7 @@
   },
   "per_agent_summary": {
     "codex:cli": 156992252,
-    "codex:vscode": 1252272495,
+    "codex:vscode": 1283153123,
     "claude_code:main": 11278004,
     "claude_code:a5719ee4e9704233b": 233868,
     "mimocode:main": 106626089,
@@ -33,12 +33,12 @@
     "codex:exec": 1074468
   },
   "statistics": {
-    "total_tokens": 1537055820,
+    "total_tokens": 1567936448,
     "peak_day": "2026-06-08",
     "peak_tokens": 289450743,
-    "current_streak": 0,
+    "current_streak": 2,
     "longest_streak": 20,
-    "total_days_active": 42
+    "total_days_active": 44
   },
   "daily_usage": {
     "2026-06-13": {
@@ -353,6 +353,36 @@
       "agents": {
         "mimocode:main": 2234307,
         "mimocode:checkpoint-writer-1": 807463
+      }
+    },
+    "2026-06-23": {
+      "input_tokens": 8662265,
+      "output_tokens": 38536,
+      "cache_read_tokens": 8030464,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 9527,
+      "total_tokens": 16740792,
+      "sessions": 78,
+      "tools": {
+        "codex": 16740792
+      },
+      "agents": {
+        "codex:vscode": 16740792
+      }
+    },
+    "2026-06-22": {
+      "input_tokens": 7383904,
+      "output_tokens": 64370,
+      "cache_read_tokens": 6671360,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 20202,
+      "total_tokens": 14139836,
+      "sessions": 99,
+      "tools": {
+        "codex": 14139836
+      },
+      "agents": {
+        "codex:vscode": 14139836
       }
     },
     "2026-06-19": {

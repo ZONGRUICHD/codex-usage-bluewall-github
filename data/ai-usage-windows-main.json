@@ -1,15 +1,15 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-06-22T01:15:09.800999+08:00",
+  "generated_at": "2026-06-23T17:59:23.087111+08:00",
   "device": "windows-main",
   "tools_scanned": [
     "codex"
   ],
   "per_tool_summary": {
-    "codex": 859867992
+    "codex": 890748620
   },
   "per_agent_summary": {
-    "codex:vscode": 839974586,
+    "codex:vscode": 870855214,
     "codex:cli": 18818938,
     "codex:exec": 1074468
   },
@@ -20,14 +20,44 @@
     }
   },
   "statistics": {
-    "total_tokens": 859867992,
+    "total_tokens": 890748620,
     "peak_day": "2026-05-12",
     "peak_tokens": 85849564,
-    "current_streak": 0,
+    "current_streak": 2,
     "longest_streak": 9,
-    "total_days_active": 33
+    "total_days_active": 35
   },
   "daily_usage": {
+    "2026-06-23": {
+      "input_tokens": 8662265,
+      "output_tokens": 38536,
+      "cache_read_tokens": 8030464,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 9527,
+      "total_tokens": 16740792,
+      "sessions": 78,
+      "tools": {
+        "codex": 16740792
+      },
+      "agents": {
+        "codex:vscode": 16740792
+      }
+    },
+    "2026-06-22": {
+      "input_tokens": 7383904,
+      "output_tokens": 64370,
+      "cache_read_tokens": 6671360,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 20202,
+      "total_tokens": 14139836,
+      "sessions": 99,
+      "tools": {
+        "codex": 14139836
+      },
+      "agents": {
+        "codex:vscode": 14139836
+      }
+    },
     "2026-06-19": {
       "input_tokens": 1896250,
       "output_tokens": 14063,
