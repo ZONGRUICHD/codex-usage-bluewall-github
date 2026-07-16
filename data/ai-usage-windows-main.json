@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-17T01:32:38.701359+08:00",
+  "generated_at": "2026-07-17T01:42:10.346028+08:00",
   "device": "windows-main",
   "token_accounting": {
     "codex_total": "payload.total_tokens or input_tokens + output_tokens",
@@ -10,9 +10,11 @@
     "codex"
   ],
   "per_tool_summary": {
-    "codex": 8397658213
+    "codex": 8718563706
   },
   "per_agent_summary": {
+    "codex:Averroes": 159395920,
+    "codex:Boyle": 420094278,
     "codex:Hooke": 20215944,
     "codex:Hubble": 154975339,
     "codex:Arendt": 219145098,
@@ -26,7 +28,7 @@
     "codex:Raman": 4922415,
     "codex:Beauvoir": 5744211,
     "codex:Curie": 249242836,
-    "codex:vscode": 1615736848,
+    "codex:vscode": 1624571552,
     "codex:Hegel": 267069128,
     "codex:Ptolemy": 123039117,
     "codex:Noether": 120781234,
@@ -38,7 +40,6 @@
     "codex:Hume": 189383074,
     "codex:Euclid": 89767804,
     "codex:Gibbs": 87111015,
-    "codex:Boyle": 264158960,
     "codex:Kepler": 70625933,
     "codex:Ohm": 74600807,
     "codex:Laplace": 148112783,
@@ -52,7 +53,6 @@
     "codex:Planck": 473506,
     "codex:Darwin": 8744289,
     "codex:Heisenberg": 191231889,
-    "codex:Averroes": 3260449,
     "codex:Wegener": 17528500,
     "codex:Pauli": 1773009,
     "codex:Copernicus": 623317,
@@ -96,7 +96,7 @@
     }
   },
   "statistics": {
-    "total_tokens": 8397658213,
+    "total_tokens": 8718563706,
     "peak_day": "2026-07-14",
     "peak_tokens": 2634839373,
     "current_streak": 16,
@@ -105,17 +105,19 @@
   },
   "daily_usage": {
     "2026-07-17": {
-      "input_tokens": 1298452676,
-      "output_tokens": 4192280,
-      "cache_read_tokens": 1253676928,
+      "input_tokens": 1618323048,
+      "output_tokens": 5227401,
+      "cache_read_tokens": 1559460864,
       "cache_write_tokens": 0,
-      "reasoning_tokens": 1665414,
-      "total_tokens": 1302644956,
-      "sessions": 7961,
+      "reasoning_tokens": 2046107,
+      "total_tokens": 1623550449,
+      "sessions": 8153,
       "tools": {
-        "codex": 1302644956
+        "codex": 1623550449
       },
       "agents": {
+        "codex:Averroes": 156135471,
+        "codex:Boyle": 155935318,
         "codex:Hooke": 20133148,
         "codex:Hubble": 21898132,
         "codex:Arendt": 149732402,
@@ -129,7 +131,7 @@
         "codex:Raman": 4922415,
         "codex:Beauvoir": 2812674,
         "codex:Curie": 139165946,
-        "codex:vscode": 49380791,
+        "codex:vscode": 58215495,
         "codex:Hegel": 132480080
       }
     },
