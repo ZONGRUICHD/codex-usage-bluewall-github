@@ -11,7 +11,9 @@ permissions:
 
 concurrency:
   group: bluewall-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # A main-branch run may be actively replacing the production container.
+  # Serialize it instead of terminating it midway through the deployment.
+  cancel-in-progress: false
 
 jobs:
   test:
@@ -53,3 +55,114 @@ jobs:
 
       - name: Run scanner, API, and render verification
         run: npm run verify
+
+  deploy-home:
+    name: Deploy home server
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: home-production
+      url: https://bluewall.zongtech.xyz
+    concurrency:
+      group: bluewall-home-production
+      cancel-in-progress: false
+    steps:
+      - name: Checkout deployment metadata
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+
+      - name: Configure deploy-only SSH identity
+        shell: bash
+        env:
+          HOME_DEPLOY_SSH_KEY: ${{ secrets.HOME_DEPLOY_SSH_KEY }}
+        run: |
+          set -Eeuo pipefail
+          umask 077
+          test -n "${HOME_DEPLOY_SSH_KEY}" || {
+            echo 'HOME_DEPLOY_SSH_KEY is not configured in the home-production environment.' >&2
+            exit 1
+          }
+          install -d -m 0700 "${HOME}/.ssh"
+          printf '%s\n' "${HOME_DEPLOY_SSH_KEY}" > "${HOME}/.ssh/bluewall_deploy"
+          chmod 0600 "${HOME}/.ssh/bluewall_deploy"
+          ssh-keygen -y -f "${HOME}/.ssh/bluewall_deploy" >/dev/null
+
+          test -s deploy/known_hosts || {
+            echo 'deploy/known_hosts is missing or empty.' >&2
+            exit 1
+          }
+          install -m 0600 deploy/known_hosts "${HOME}/.ssh/known_hosts"
+
+      - name: Deploy tested commit through the forced SSH command
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          ssh -T \
+            -p 3199 \
+            -i "${HOME}/.ssh/bluewall_deploy" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -o "UserKnownHostsFile=${HOME}/.ssh/known_hosts" \
+            -o ConnectTimeout=20 \
+            -o ServerAliveInterval=15 \
+            -o ServerAliveCountMax=4 \
+            zongrui@home.zongtech.xyz \
+            "deploy ${GITHUB_SHA}"
+
+      - name: Verify public health and SVG responses
+        shell: bash
+        env:
+          PUBLIC_BASE_URL: https://bluewall.zongtech.xyz
+        run: |
+          set -Eeuo pipefail
+
+          health_file="$(mktemp)"
+          svg_file="$(mktemp)"
+          headers_file="$(mktemp)"
+          trap 'rm -f "${health_file}" "${svg_file}" "${headers_file}"' EXIT
+
+          healthy=false
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent --show-error \
+              --connect-timeout 10 --max-time 30 \
+              -H 'Cache-Control: no-cache' \
+              "${PUBLIC_BASE_URL}/healthz?commit=${GITHUB_SHA}" \
+              --output "${health_file}" && \
+              grep -Eq '"status"[[:space:]]*:[[:space:]]*"ok"' "${health_file}" && \
+              grep -Eq "\"commit\"[[:space:]]*:[[:space:]]*\"${GITHUB_SHA}\"" "${health_file}"; then
+              healthy=true
+              break
+            fi
+            echo "Public health check attempt ${attempt}/30 has not reached the new release yet."
+            sleep 5
+          done
+          if [[ ${healthy} != true ]]; then
+            echo 'Public health endpoint did not report the deployed commit.' >&2
+            cat "${health_file}" >&2 || true
+            exit 1
+          fi
+
+          curl --fail --silent --show-error \
+            --connect-timeout 10 --max-time 60 \
+            --retry 5 --retry-all-errors --retry-delay 2 \
+            --dump-header "${headers_file}" \
+            --output "${svg_file}" \
+            "${PUBLIC_BASE_URL}/api/svg?days=7"
+
+          grep -Eiq '^content-type:[[:space:]]*image/svg\+xml([[:space:]]*;|[[:space:]]*$)' \
+            "${headers_file}" || {
+              echo 'Public SVG response has the wrong Content-Type.' >&2
+              cat "${headers_file}" >&2
+              exit 1
+            }
+          grep -Eq '<svg([[:space:]>])' "${svg_file}" || {
+            echo 'Public SVG response does not contain an SVG root element.' >&2
+            exit 1
+          }
+
+      - name: Remove deploy identity
+        if: always()
+        shell: bash
+        run: rm -f "${HOME}/.ssh/bluewall_deploy"

@@ -183,7 +183,7 @@ try {
         $inputs + @('--output', $TempMergedData)
     Invoke-Checked $Python @mergeArguments
 
-    Write-Step 'Rendering the shared GitHub/Vercel SVG'
+    Write-Step 'Rendering the shared GitHub/self-hosted SVG'
     $renderArguments = @(
         $RendererScript
         '--data'

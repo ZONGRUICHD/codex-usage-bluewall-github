@@ -8,8 +8,12 @@ const DEFAULT_REPO_OWNER = 'ZONGRUICHD';
 const DEFAULT_REPO_NAME = 'codex-usage-bluewall-github';
 const DEFAULT_BRANCH = 'main';
 const DEFAULT_TIME_ZONE = 'Asia/Shanghai';
+const DEFAULT_DATA_CACHE_TTL_MS = 300_000;
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const DAY_MS = 86_400_000;
+
+let usageDataCache = null;
+let usageDataPromise = null;
 
 function normalizeTimeZone(value) {
   const timeZone = typeof value === 'string' && value.trim()
@@ -31,6 +35,20 @@ function parseStaleAfterDays(value, fallback = 2) {
   if (typeof value !== 'string' || !/^\d+$/.test(value)) return safeFallback;
   const parsed = Number(value);
   return Number.isSafeInteger(parsed) ? parsed : safeFallback;
+}
+
+function parseDataCacheTtlMs(value, fallback = DEFAULT_DATA_CACHE_TTL_MS) {
+  const safeFallback = Number.isSafeInteger(fallback) && fallback >= 0
+    ? Math.min(fallback, 3_600_000)
+    : DEFAULT_DATA_CACHE_TTL_MS;
+  if (typeof value === 'number') {
+    return Number.isSafeInteger(value) && value >= 0
+      ? Math.min(value, 3_600_000)
+      : safeFallback;
+  }
+  if (typeof value !== 'string' || !/^\d+$/.test(value)) return safeFallback;
+  const parsed = Number(value);
+  return Number.isSafeInteger(parsed) ? Math.min(parsed, 3_600_000) : safeFallback;
 }
 
 function escapeXml(value) {
@@ -390,8 +408,8 @@ function fetchJSON(url, options = {}) {
 
 function repositoryCoordinates() {
   return {
-    owner: process.env.GITHUB_USERNAME || process.env.VERCEL_GIT_REPO_OWNER || DEFAULT_REPO_OWNER,
-    repository: process.env.GITHUB_REPO || process.env.VERCEL_GIT_REPO_SLUG || DEFAULT_REPO_NAME,
+    owner: process.env.GITHUB_USERNAME || DEFAULT_REPO_OWNER,
+    repository: process.env.GITHUB_REPO || DEFAULT_REPO_NAME,
     branch: process.env.GITHUB_BRANCH || DEFAULT_BRANCH
   };
 }
@@ -429,7 +447,7 @@ function newestSnapshot(bundled, fetched, validator) {
   return { value: bundled, source: 'bundled' };
 }
 
-async function loadUsageData(fetcher = fetchJSON) {
+async function loadUsageDataUncached(fetcher) {
   const { owner, repository, branch } = repositoryCoordinates();
   const dataRoot = GITHUB_RAW_URL + '/' + [owner, repository, branch, 'data']
     .map(segment => encodeURIComponent(segment))
@@ -475,6 +493,35 @@ async function loadUsageData(fetcher = fetchJSON) {
   }
 
   return { data, cloudActivityData, source, cloudSource, dataRoot };
+}
+
+function loadUsageData(fetcher = fetchJSON, options = {}) {
+  const useCache = options.cache == null ? fetcher === fetchJSON : Boolean(options.cache);
+  if (!useCache) return loadUsageDataUncached(fetcher);
+
+  const now = Number.isFinite(options.now) ? options.now : Date.now();
+  const ttlMs = parseDataCacheTtlMs(
+    options.ttlMs == null ? process.env.DATA_CACHE_TTL_MS : options.ttlMs
+  );
+  if (usageDataCache && usageDataCache.expiresAt > now) {
+    return Promise.resolve(usageDataCache.value);
+  }
+  if (usageDataPromise) return usageDataPromise;
+
+  usageDataPromise = loadUsageDataUncached(fetcher)
+    .then(value => {
+      usageDataCache = { value, expiresAt: Date.now() + ttlMs };
+      return value;
+    })
+    .finally(() => {
+      usageDataPromise = null;
+    });
+  return usageDataPromise;
+}
+
+function resetUsageDataCache() {
+  usageDataCache = null;
+  usageDataPromise = null;
 }
 
 function queryKeys(query) {
@@ -557,5 +604,7 @@ module.exports.fetchJSON = fetchJSON;
 module.exports.generateSVG = generateSVG;
 module.exports.loadUsageData = loadUsageData;
 module.exports.normalizeTimeZone = normalizeTimeZone;
+module.exports.parseDataCacheTtlMs = parseDataCacheTtlMs;
 module.exports.parseStaleAfterDays = parseStaleAfterDays;
+module.exports.resetUsageDataCache = resetUsageDataCache;
 module.exports.repositoryCoordinates = repositoryCoordinates;

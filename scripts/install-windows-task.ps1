@@ -1,4 +1,4 @@
-# Install the local collector that GitHub-hosted runners and Vercel cannot run.
+# Install the local collector that GitHub-hosted runners and the home server cannot run.
 
 [CmdletBinding(SupportsShouldProcess)]
 param(
@@ -66,7 +66,7 @@ if ($PSCmdlet.ShouldProcess($TaskName, "Install daily collector at $At")) {
         -Trigger $triggers `
         -Principal $principal `
         -Settings $settings `
-        -Description 'Scan local AI coding usage and publish aggregate data to GitHub/Vercel.' `
+        -Description 'Scan local AI coding usage and publish aggregate data through GitHub to the home service.' `
         -Force | Out-Null
 
     if ($RunNow) {

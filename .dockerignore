@@ -1,0 +1,21 @@
+# Send only the files explicitly needed by the verify and runtime stages.
+# This prevents accidental local databases, logs, credentials, and raw usage
+# sources from ever entering the Docker build context.
+*
+!Dockerfile
+!.dockerignore
+!package.json
+!server.js
+!api/
+!api/**
+!assets/
+!assets/ai-blue-wall.svg
+!data/
+!data/*.json
+!public/
+!public/index.html
+!scripts/
+!scripts/render_blue_wall.js
+!tests/
+!tests/test_api_svg.js
+!tests/test_server.js

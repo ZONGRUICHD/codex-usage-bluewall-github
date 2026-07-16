@@ -14,7 +14,9 @@ const {
   generateSVG,
   loadUsageData,
   normalizeTimeZone,
+  parseDataCacheTtlMs,
   parseStaleAfterDays,
+  resetUsageDataCache,
   repositoryCoordinates
 } = handler;
 
@@ -139,6 +141,10 @@ async function main() {
   assert.equal(parseStaleAfterDays('-1'), 2);
   assert.equal(parseStaleAfterDays('3days'), 2);
   assert.equal(parseStaleAfterDays(''), 2);
+  assert.equal(parseDataCacheTtlMs('0'), 0);
+  assert.equal(parseDataCacheTtlMs('300000'), 300000);
+  assert.equal(parseDataCacheTtlMs('9999999'), 3600000);
+  assert.equal(parseDataCacheTtlMs('-1'), 300000);
 
   assert.equal(
     dateKeyInTimeZone(new Date('2026-07-16T16:25:00Z'), 'Asia/Shanghai'),
@@ -282,6 +288,33 @@ async function main() {
   assert.equal(newerSelection.cloudSource, 'github');
   assert.equal(newerSelection.data.generated_at, '2999-01-01T00:00:00Z');
   assert.equal(newerSelection.cloudActivityData.generated_at, '2999-01-01T00:00:00Z');
+
+  resetUsageDataCache();
+  let cachedFetchCount = 0;
+  let releaseCachedFetch;
+  const cachedFetchGate = new Promise(resolve => {
+    releaseCachedFetch = resolve;
+  });
+  const cachedFetcher = async url => {
+    cachedFetchCount++;
+    await cachedFetchGate;
+    return url.endsWith('ai-usage.json')
+      ? { generated_at: '2999-01-01T00:00:00Z', daily_usage: {} }
+      : { generated_at: '2999-01-01T00:00:00Z', daily_usage_percent: {} };
+  };
+  const firstCachedLoad = loadUsageData(cachedFetcher, { cache: true, ttlMs: 60_000 });
+  const secondCachedLoad = loadUsageData(cachedFetcher, { cache: true, ttlMs: 60_000 });
+  releaseCachedFetch();
+  const [firstCachedValue, secondCachedValue] = await Promise.all([
+    firstCachedLoad,
+    secondCachedLoad
+  ]);
+  assert.equal(cachedFetchCount, 2, 'concurrent loads should share one pair of upstream requests');
+  assert.strictEqual(firstCachedValue, secondCachedValue);
+  const thirdCachedValue = await loadUsageData(cachedFetcher, { cache: true, ttlMs: 60_000 });
+  assert.equal(cachedFetchCount, 2, 'warm cache should avoid repeated upstream requests');
+  assert.strictEqual(firstCachedValue, thirdCachedValue);
+  resetUsageDataCache();
 
   const methodResponse = responseRecorder();
   await handler({ method: 'POST', query: {} }, methodResponse);
