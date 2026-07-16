@@ -1,0 +1,302 @@
+#!/usr/bin/env bash
+# Root-owned deployment entrypoint for codex-usage-bluewall.
+# Invoked only through bluewall-deploy-gate with a full commit SHA.
+
+set -Eeuo pipefail
+
+PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+export PATH
+umask 022
+
+readonly SERVICE='codex-usage-bluewall'
+readonly REPOSITORY_URL='https://github.com/ZONGRUICHD/codex-usage-bluewall-github.git'
+readonly DEPLOY_ROOT='/opt/codex-usage-bluewall'
+readonly REPOSITORY_DIR="${DEPLOY_ROOT}/repository"
+readonly WORKTREE_ROOT="${DEPLOY_ROOT}/worktrees"
+readonly LOCK_FILE='/run/lock/codex-usage-bluewall-deploy.lock'
+readonly PRODUCTION_CONTAINER='codex-usage-bluewall'
+readonly HOST_PORT='13299'
+readonly CONTAINER_PORT='3000'
+
+log() {
+  printf '%s %s\n' "$(date --utc '+%Y-%m-%dT%H:%M:%SZ')" "$*"
+}
+
+die() {
+  log "ERROR: $*" >&2
+  exit 1
+}
+
+require_command() {
+  command -v "$1" >/dev/null 2>&1 || die "required command is unavailable: $1"
+}
+
+[[ ${EUID} -eq 0 ]] || die 'this deployer must run as root'
+[[ $# -eq 1 ]] || die 'usage: bluewall-deploy <40-character-commit-sha>'
+
+readonly SHA="$1"
+[[ ${SHA} =~ ^[0-9a-f]{40}$ ]] || die 'commit must be a lowercase 40-character SHA'
+
+for command_name in curl docker flock git install mktemp rmdir stat; do
+  require_command "${command_name}"
+done
+
+install -d -o root -g root -m 0755 "${DEPLOY_ROOT}" "${WORKTREE_ROOT}"
+exec 9>"${LOCK_FILE}"
+flock 9
+
+WORKTREE=''
+CANDIDATE_CONTAINER=''
+ROLLBACK_CONTAINER=''
+PROMOTION_ACTIVE=0
+HAD_PRODUCTION=0
+
+cleanup() {
+  local exit_code=$?
+
+  if (( PROMOTION_ACTIVE )); then
+    rollback || true
+  fi
+
+  if [[ -n ${CANDIDATE_CONTAINER} ]]; then
+    docker rm --force "${CANDIDATE_CONTAINER}" >/dev/null 2>&1 || true
+  fi
+
+  if [[ -n ${WORKTREE} && -d ${WORKTREE} ]]; then
+    git -C "${REPOSITORY_DIR}" worktree remove --force "${WORKTREE}" >/dev/null 2>&1 || true
+  fi
+
+  return "${exit_code}"
+}
+trap cleanup EXIT
+trap 'exit 129' HUP
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+if [[ ! -d ${REPOSITORY_DIR}/.git ]]; then
+  [[ ! -e ${REPOSITORY_DIR} ]] || die "repository path exists but is not a Git repository: ${REPOSITORY_DIR}"
+  log 'Creating the root-owned deployment repository'
+  git clone --no-checkout --origin origin "${REPOSITORY_URL}" "${REPOSITORY_DIR}"
+fi
+
+repository_owner="$(stat -c '%U:%G' "${REPOSITORY_DIR}")"
+[[ ${repository_owner} == 'root:root' ]] || die "deployment repository must be owned by root:root (found ${repository_owner})"
+
+git -C "${REPOSITORY_DIR}" remote set-url origin "${REPOSITORY_URL}"
+log 'Fetching origin/main'
+git -C "${REPOSITORY_DIR}" fetch --force --prune --no-tags origin \
+  '+refs/heads/main:refs/remotes/origin/main'
+
+git -C "${REPOSITORY_DIR}" cat-file -e "${SHA}^{commit}" 2>/dev/null || \
+  die "commit does not exist in the fetched repository: ${SHA}"
+git -C "${REPOSITORY_DIR}" merge-base --is-ancestor "${SHA}" refs/remotes/origin/main || \
+  die "commit is not reachable from origin/main: ${SHA}"
+
+readonly IMAGE="${SERVICE}:${SHA}"
+readonly SHORT_SHA="${SHA:0:12}"
+
+WORKTREE="$(mktemp -d "${WORKTREE_ROOT}/${SHORT_SHA}.XXXXXX")"
+rmdir "${WORKTREE}"
+git -C "${REPOSITORY_DIR}" worktree add --detach --force "${WORKTREE}" "${SHA}"
+
+log "Building immutable image ${IMAGE}"
+docker build \
+  --pull \
+  --build-arg "APP_COMMIT=${SHA}" \
+  --label "com.zongtech.bluewall.service=${SERVICE}" \
+  --label "com.zongtech.bluewall.commit=${SHA}" \
+  --tag "${IMAGE}" \
+  "${WORKTREE}"
+
+run_container() {
+  local name=$1
+  local restart_policy=$2
+  local port_mapping=$3
+
+  docker run --detach \
+    --name "${name}" \
+    --init \
+    --read-only \
+    --tmpfs '/tmp:rw,noexec,nosuid,nodev,size=16m' \
+    --cap-drop ALL \
+    --security-opt 'no-new-privileges:true' \
+    --pids-limit 128 \
+    --memory 256m \
+    --cpus 1 \
+    --log-opt 'max-size=10m' \
+    --log-opt 'max-file=3' \
+    --restart "${restart_policy}" \
+    --health-cmd 'node -e "fetch(\"http://127.0.0.1:3000/healthz\").then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"' \
+    --health-interval 2s \
+    --health-timeout 2s \
+    --health-retries 20 \
+    --health-start-period 3s \
+    --env 'HOST=0.0.0.0' \
+    --env "PORT=${CONTAINER_PORT}" \
+    --env "APP_COMMIT=${SHA}" \
+    --label "com.zongtech.bluewall.service=${SERVICE}" \
+    --label "com.zongtech.bluewall.commit=${SHA}" \
+    --publish "${port_mapping}" \
+    "${IMAGE}" >/dev/null
+}
+
+wait_for_container_health() {
+  local name=$1
+  local attempts=${2:-30}
+  local state=''
+  local attempt
+
+  for ((attempt = 1; attempt <= attempts; attempt += 1)); do
+    state="$(docker container inspect \
+      --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' \
+      "${name}" 2>/dev/null || true)"
+    case "${state}" in
+      healthy)
+        return 0
+        ;;
+      exited|dead|unhealthy)
+        docker container logs --tail 80 "${name}" >&2 || true
+        return 1
+        ;;
+    esac
+    sleep 2
+  done
+
+  docker container logs --tail 80 "${name}" >&2 || true
+  return 1
+}
+
+verify_http_health() {
+  local url=$1
+  local response
+
+  response="$(curl --fail --silent --show-error \
+    --connect-timeout 3 --max-time 10 "${url}")" || return 1
+  grep -Eq '"status"[[:space:]]*:[[:space:]]*"ok"' <<<"${response}" || return 1
+  grep -Eq "\"commit\"[[:space:]]*:[[:space:]]*\"${SHA}\"" <<<"${response}" || return 1
+}
+
+verify_http_ready() {
+  local url=$1
+  local response
+
+  response="$(curl --fail --silent --show-error \
+    --connect-timeout 3 --max-time 10 "${url}")" || return 1
+  grep -Eq '"status"[[:space:]]*:[[:space:]]*"ready"' <<<"${response}" || return 1
+  grep -Eq "\"commit\"[[:space:]]*:[[:space:]]*\"${SHA}\"" <<<"${response}" || return 1
+}
+
+verify_http_svg() {
+  local url=$1
+  local body_file
+  local headers_file
+  local result=0
+
+  body_file="$(mktemp)"
+  headers_file="$(mktemp)"
+  if ! curl --fail --silent --show-error \
+    --connect-timeout 3 --max-time 20 \
+    --dump-header "${headers_file}" \
+    --output "${body_file}" \
+    "${url}"; then
+    result=1
+  elif ! grep -Eiq '^content-type:[[:space:]]*image/svg\+xml([[:space:]]*;|[[:space:]]*$)' \
+    "${headers_file}"; then
+    result=1
+  elif ! grep -Eq '<svg([[:space:]>])' "${body_file}"; then
+    result=1
+  fi
+  rm -f "${body_file}" "${headers_file}"
+  return "${result}"
+}
+
+CANDIDATE_CONTAINER="${SERVICE}-candidate-${SHORT_SHA}-$$"
+log "Starting isolated candidate ${CANDIDATE_CONTAINER}"
+run_container "${CANDIDATE_CONTAINER}" 'no' "127.0.0.1::${CONTAINER_PORT}"
+wait_for_container_health "${CANDIDATE_CONTAINER}" 30 || die 'candidate container did not become healthy'
+
+candidate_port="$(docker port "${CANDIDATE_CONTAINER}" "${CONTAINER_PORT}/tcp" \
+  | sed -n 's/^127\.0\.0\.1:\([0-9][0-9]*\)$/\1/p' \
+  | head -n 1)"
+[[ ${candidate_port} =~ ^[0-9]+$ ]] || die 'could not determine the candidate loopback port'
+verify_http_health "http://127.0.0.1:${candidate_port}/healthz" || \
+  die 'candidate health response did not identify the requested commit'
+verify_http_ready "http://127.0.0.1:${candidate_port}/readyz" || \
+  die 'candidate bundled-data readiness check failed'
+verify_http_svg "http://127.0.0.1:${candidate_port}/api/svg?days=7" || \
+  die 'candidate SVG smoke test failed'
+
+docker rm --force "${CANDIDATE_CONTAINER}" >/dev/null
+CANDIDATE_CONTAINER=''
+
+rollback() {
+  log 'New production container failed; attempting rollback' >&2
+
+  if [[ -n ${ROLLBACK_CONTAINER} ]] && \
+     docker container inspect "${ROLLBACK_CONTAINER}" >/dev/null 2>&1; then
+    docker rm --force "${PRODUCTION_CONTAINER}" >/dev/null 2>&1 || true
+    docker container rename "${ROLLBACK_CONTAINER}" "${PRODUCTION_CONTAINER}"
+    docker container start "${PRODUCTION_CONTAINER}" >/dev/null
+    if wait_for_container_health "${PRODUCTION_CONTAINER}" 30 && \
+       curl --fail --silent --show-error --max-time 10 \
+         "http://127.0.0.1:${HOST_PORT}/healthz" >/dev/null; then
+      log 'Rollback restored the previous production container' >&2
+    else
+      log 'ERROR: rollback container did not recover' >&2
+    fi
+  else
+    if (( HAD_PRODUCTION )); then
+      log 'The previous production container was never replaced; leaving it in place' >&2
+    else
+      docker rm --force "${PRODUCTION_CONTAINER}" >/dev/null 2>&1 || true
+      log 'No previous production container was available to restore' >&2
+    fi
+  fi
+
+  PROMOTION_ACTIVE=0
+}
+
+if docker container inspect "${PRODUCTION_CONTAINER}" >/dev/null 2>&1; then
+  production_service="$(docker container inspect \
+    --format '{{ index .Config.Labels "com.zongtech.bluewall.service" }}' \
+    "${PRODUCTION_CONTAINER}" 2>/dev/null || true)"
+  [[ ${production_service} == "${SERVICE}" ]] || \
+    die "refusing to replace an unmanaged container named ${PRODUCTION_CONTAINER}"
+  HAD_PRODUCTION=1
+
+  ROLLBACK_CONTAINER="${SERVICE}-rollback-${SHORT_SHA}-$$"
+  log "Preserving the current container as ${ROLLBACK_CONTAINER}"
+  PROMOTION_ACTIVE=1
+  if ! docker container rename "${PRODUCTION_CONTAINER}" "${ROLLBACK_CONTAINER}"; then
+    PROMOTION_ACTIVE=0
+    die 'could not preserve the current production container'
+  fi
+  if ! docker container stop --time 20 "${ROLLBACK_CONTAINER}" >/dev/null; then
+    rollback
+    die 'could not stop the previous production container'
+  fi
+fi
+
+PROMOTION_ACTIVE=1
+log "Promoting ${IMAGE} on 127.0.0.1:${HOST_PORT}"
+if ! run_container "${PRODUCTION_CONTAINER}" 'unless-stopped' \
+  "127.0.0.1:${HOST_PORT}:${CONTAINER_PORT}"; then
+  rollback
+  die 'could not start the new production container'
+fi
+
+if ! wait_for_container_health "${PRODUCTION_CONTAINER}" 30 || \
+   ! verify_http_health "http://127.0.0.1:${HOST_PORT}/healthz" || \
+   ! verify_http_ready "http://127.0.0.1:${HOST_PORT}/readyz" || \
+   ! verify_http_svg "http://127.0.0.1:${HOST_PORT}/api/svg?days=7"; then
+  rollback
+  die 'new production container failed its health check'
+fi
+
+if [[ -n ${ROLLBACK_CONTAINER} ]]; then
+  docker rm "${ROLLBACK_CONTAINER}" >/dev/null
+  ROLLBACK_CONTAINER=''
+fi
+PROMOTION_ACTIVE=0
+
+log "Deployment complete: ${SHA}"

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Forced-command SSH gate. The authorized_keys entry must use:
+# restrict,command="/usr/local/sbin/bluewall-deploy-gate" ssh-ed25519 ...
+
+set -Eeuo pipefail
+
+PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+export PATH
+umask 077
+
+readonly DEPLOYER='/usr/local/sbin/bluewall-deploy'
+readonly COMMAND="${SSH_ORIGINAL_COMMAND:-}"
+
+if [[ ${COMMAND} =~ ^deploy\ ([0-9a-f]{40})$ ]]; then
+  readonly SHA="${BASH_REMATCH[1]}"
+  exec sudo -n -- "${DEPLOYER}" "${SHA}"
+fi
+
+printf '%s\n' 'Rejected: expected exactly "deploy <40-character-commit-sha>".' >&2
+exit 64
