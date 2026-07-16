@@ -37,7 +37,7 @@ require_command() {
 readonly SHA="$1"
 [[ ${SHA} =~ ^[0-9a-f]{40}$ ]] || die 'commit must be a lowercase 40-character SHA'
 
-for command_name in curl docker flock git install mktemp rmdir stat; do
+for command_name in curl docker flock git install mktemp mv rm rmdir sleep stat; do
   require_command "${command_name}"
 done
 
@@ -46,6 +46,7 @@ exec 9>"${LOCK_FILE}"
 flock 9
 
 WORKTREE=''
+CLONE_DIR=''
 CANDIDATE_CONTAINER=''
 ROLLBACK_CONTAINER=''
 PROMOTION_ACTIVE=0
@@ -66,6 +67,14 @@ cleanup() {
     git -C "${REPOSITORY_DIR}" worktree remove --force "${WORKTREE}" >/dev/null 2>&1 || true
   fi
 
+  if [[ -n ${CLONE_DIR} ]]; then
+    case "${CLONE_DIR}" in
+      "${DEPLOY_ROOT}"/repository.bootstrap.*)
+        rm -rf -- "${CLONE_DIR}"
+        ;;
+    esac
+  fi
+
   return "${exit_code}"
 }
 trap cleanup EXIT
@@ -73,10 +82,44 @@ trap 'exit 129' HUP
 trap 'exit 130' INT
 trap 'exit 143' TERM
 
+retry() {
+  local max_attempts=$1
+  local delay_seconds=$2
+  shift 2
+  local attempt
+
+  for ((attempt = 1; attempt <= max_attempts; attempt += 1)); do
+    if "$@"; then
+      return 0
+    fi
+    if (( attempt < max_attempts )); then
+      log "Command failed on attempt ${attempt}/${max_attempts}; retrying in ${delay_seconds}s" >&2
+      sleep "${delay_seconds}"
+    fi
+  done
+  return 1
+}
+
+clone_repository() {
+  case "${CLONE_DIR}" in
+    "${DEPLOY_ROOT}"/repository.bootstrap.*)
+      rm -rf -- "${CLONE_DIR}"
+      ;;
+    *)
+      die 'refusing to reset an unexpected clone path'
+      ;;
+  esac
+  git -c http.version=HTTP/1.1 clone --no-checkout --origin origin \
+    "${REPOSITORY_URL}" "${CLONE_DIR}"
+}
+
 if [[ ! -d ${REPOSITORY_DIR}/.git ]]; then
   [[ ! -e ${REPOSITORY_DIR} ]] || die "repository path exists but is not a Git repository: ${REPOSITORY_DIR}"
   log 'Creating the root-owned deployment repository'
-  git clone --no-checkout --origin origin "${REPOSITORY_URL}" "${REPOSITORY_DIR}"
+  CLONE_DIR="$(mktemp -d "${DEPLOY_ROOT}/repository.bootstrap.XXXXXX")"
+  retry 3 5 clone_repository || die 'could not clone the deployment repository'
+  mv "${CLONE_DIR}" "${REPOSITORY_DIR}"
+  CLONE_DIR=''
 fi
 
 repository_owner="$(stat -c '%U:%G' "${REPOSITORY_DIR}")"
@@ -84,8 +127,9 @@ repository_owner="$(stat -c '%U:%G' "${REPOSITORY_DIR}")"
 
 git -C "${REPOSITORY_DIR}" remote set-url origin "${REPOSITORY_URL}"
 log 'Fetching origin/main'
-git -C "${REPOSITORY_DIR}" fetch --force --prune --no-tags origin \
-  '+refs/heads/main:refs/remotes/origin/main'
+retry 3 5 git -c http.version=HTTP/1.1 -C "${REPOSITORY_DIR}" \
+  fetch --force --prune --no-tags origin \
+  '+refs/heads/main:refs/remotes/origin/main' || die 'could not fetch origin/main'
 
 git -C "${REPOSITORY_DIR}" cat-file -e "${SHA}^{commit}" 2>/dev/null || \
   die "commit does not exist in the fetched repository: ${SHA}"
@@ -101,7 +145,6 @@ git -C "${REPOSITORY_DIR}" worktree add --detach --force "${WORKTREE}" "${SHA}"
 
 log "Building immutable image ${IMAGE}"
 docker build \
-  --pull \
   --build-arg "APP_COMMIT=${SHA}" \
   --label "com.zongtech.bluewall.service=${SERVICE}" \
   --label "com.zongtech.bluewall.commit=${SHA}" \
