@@ -234,26 +234,48 @@ rollback() {
 
   if [[ -n ${ROLLBACK_CONTAINER} ]] && \
      docker container inspect "${ROLLBACK_CONTAINER}" >/dev/null 2>&1; then
-    docker rm --force "${PRODUCTION_CONTAINER}" >/dev/null 2>&1 || true
-    docker container rename "${ROLLBACK_CONTAINER}" "${PRODUCTION_CONTAINER}"
-    docker container start "${PRODUCTION_CONTAINER}" >/dev/null
-    if wait_for_container_health "${PRODUCTION_CONTAINER}" 30 && \
-       curl --fail --silent --show-error --max-time 10 \
-         "http://127.0.0.1:${HOST_PORT}/healthz" >/dev/null; then
-      log 'Rollback restored the previous production container' >&2
-    else
-      log 'ERROR: rollback container did not recover' >&2
+    if docker container inspect "${PRODUCTION_CONTAINER}" >/dev/null 2>&1; then
+      if ! docker rm --force "${PRODUCTION_CONTAINER}" >/dev/null 2>&1; then
+        log 'ERROR: could not remove the failed production container' >&2
+        return 1
+      fi
     fi
+    if ! docker container rename "${ROLLBACK_CONTAINER}" "${PRODUCTION_CONTAINER}"; then
+      log 'ERROR: could not restore the previous container name' >&2
+      return 1
+    fi
+    if ! docker container start "${PRODUCTION_CONTAINER}" >/dev/null; then
+      log 'ERROR: could not restart the previous production container' >&2
+      return 1
+    fi
+    if ! wait_for_container_health "${PRODUCTION_CONTAINER}" 30 || \
+       ! curl --fail --silent --show-error --max-time 10 \
+         "http://127.0.0.1:${HOST_PORT}/healthz" >/dev/null; then
+      log 'ERROR: rollback container did not recover' >&2
+      return 1
+    fi
+    ROLLBACK_CONTAINER=''
+    PROMOTION_ACTIVE=0
+    log 'Rollback restored the previous production container' >&2
+    return 0
   else
     if (( HAD_PRODUCTION )); then
-      log 'The previous production container was never replaced; leaving it in place' >&2
+      if docker container inspect "${PRODUCTION_CONTAINER}" >/dev/null 2>&1 && \
+         curl --fail --silent --show-error --max-time 10 \
+           "http://127.0.0.1:${HOST_PORT}/healthz" >/dev/null; then
+        PROMOTION_ACTIVE=0
+        log 'The previous production container was never replaced and remains healthy' >&2
+        return 0
+      fi
+      log 'ERROR: the previous production container could not be located or verified' >&2
+      return 1
     else
       docker rm --force "${PRODUCTION_CONTAINER}" >/dev/null 2>&1 || true
+      PROMOTION_ACTIVE=0
       log 'No previous production container was available to restore' >&2
+      return 0
     fi
   fi
-
-  PROMOTION_ACTIVE=0
 }
 
 if docker container inspect "${PRODUCTION_CONTAINER}" >/dev/null 2>&1; then
