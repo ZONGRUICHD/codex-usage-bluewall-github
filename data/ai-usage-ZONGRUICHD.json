@@ -1,34 +1,43 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "generated_at": "2026-06-13T01:22:27.133203+08:00",
   "device": "ZONGRUICHD",
+  "token_accounting": {
+    "status": "exact_for_retained_tools",
+    "retained_tools": [
+      "claude_code",
+      "mimocode"
+    ],
+    "component_fields": "unavailable for legacy aggregates; stored as zero",
+    "retired_codex": "omitted because the raw rollouts are unavailable and the legacy accounting formula double-counted token subsets"
+  },
+  "data_quality": {
+    "complete": false,
+    "status": "historical_gap",
+    "notes": [
+      {
+        "code": "retired_codex_omitted",
+        "severity": "warning",
+        "affected_tool": "codex",
+        "message": "Retired-device Codex history was omitted because its raw rollouts are unavailable and its legacy totals cannot be verified without double-counting token subsets."
+      }
+    ]
+  },
   "tools_scanned": [
-    "codex",
     "claude_code",
-    "mimocode",
-    "opencode",
-    "hermes"
+    "mimocode"
   ],
   "per_tool_summary": {
-    "codex": 550471223,
     "claude_code": 11511872,
-    "mimocode": 115204733,
-    "opencode": 0,
-    "hermes": 0
+    "mimocode": 115204733
   },
   "per_agent_summary": {
-    "codex:cli": 138173314,
-    "codex:vscode": 412297909,
     "claude_code:main": 11278004,
     "claude_code:a5719ee4e9704233b": 233868,
     "mimocode:main": 106626089,
     "mimocode:checkpoint-writer-1": 8578644
   },
   "scan_status": {
-    "codex": {
-      "available": true,
-      "warning_count": 0
-    },
     "claude_code": {
       "available": true,
       "warning_count": 0
@@ -36,290 +45,101 @@
     "mimocode": {
       "available": true,
       "warning_count": 0
-    },
-    "opencode": {
-      "available": false,
-      "warning_count": 1
-    },
-    "hermes": {
-      "available": false,
-      "warning_count": 1
     }
   },
   "statistics": {
-    "total_tokens": 677187828,
-    "peak_day": "2026-06-08",
-    "peak_tokens": 289450743,
-    "current_streak": 9,
-    "longest_streak": 10,
-    "total_days_active": 19
+    "total_tokens": 126716605,
+    "peak_day": "2026-06-12",
+    "peak_tokens": 91893121,
+    "current_streak": 0,
+    "longest_streak": 9,
+    "total_days_active": 9
   },
   "daily_usage": {
-    "2026-06-13": {
-      "input_tokens": 23695119,
-      "output_tokens": 86019,
-      "cache_read_tokens": 42271872,
+    "2026-06-05": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_read_tokens": 0,
       "cache_write_tokens": 0,
-      "reasoning_tokens": 22455,
-      "total_tokens": 66075465,
-      "sessions": 230,
+      "reasoning_tokens": 0,
+      "total_tokens": 103518,
+      "sessions": 0,
       "tools": {
-        "codex": 45482315,
-        "mimocode": 20593150
+        "claude_code": 103518
       },
       "agents": {
-        "codex:cli": 45482315,
-        "mimocode:main": 19133579,
-        "mimocode:checkpoint-writer-1": 1459571
+        "claude_code:main": 103518
       }
     },
-    "2026-06-09": {
-      "input_tokens": 6992460,
-      "output_tokens": 51860,
-      "cache_read_tokens": 8134592,
+    "2026-06-06": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_read_tokens": 0,
       "cache_write_tokens": 0,
-      "reasoning_tokens": 7185,
-      "total_tokens": 15186097,
-      "sessions": 156,
+      "reasoning_tokens": 0,
+      "total_tokens": 200504,
+      "sessions": 0,
       "tools": {
-        "codex": 12513170,
-        "claude_code": 2672927
+        "claude_code": 200504
       },
       "agents": {
-        "codex:cli": 3031945,
-        "codex:vscode": 9481225,
-        "claude_code:main": 2672927
+        "claude_code:main": 200504
+      }
+    },
+    "2026-06-07": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 0,
+      "total_tokens": 5826407,
+      "sessions": 0,
+      "tools": {
+        "claude_code": 5826407
+      },
+      "agents": {
+        "claude_code:main": 5826407
       }
     },
     "2026-06-08": {
-      "input_tokens": 146402669,
-      "output_tokens": 739770,
-      "cache_read_tokens": 142065472,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_read_tokens": 0,
       "cache_write_tokens": 0,
-      "reasoning_tokens": 242832,
-      "total_tokens": 289450743,
-      "sessions": 617,
+      "reasoning_tokens": 0,
+      "total_tokens": 2038700,
+      "sessions": 0,
       "tools": {
-        "codex": 287412043,
         "claude_code": 2038700
       },
       "agents": {
-        "codex:vscode": 268274768,
-        "codex:cli": 19137275,
         "claude_code:main": 1804832,
         "claude_code:a5719ee4e9704233b": 233868
       }
     },
-    "2026-06-07": {
-      "input_tokens": 34624587,
-      "output_tokens": 233435,
-      "cache_read_tokens": 37681920,
+    "2026-06-09": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_read_tokens": 0,
       "cache_write_tokens": 0,
-      "reasoning_tokens": 97429,
-      "total_tokens": 72637371,
-      "sessions": 522,
+      "reasoning_tokens": 0,
+      "total_tokens": 2672927,
+      "sessions": 0,
       "tools": {
-        "codex": 66810964,
-        "claude_code": 5826407
+        "claude_code": 2672927
       },
       "agents": {
-        "codex:vscode": 11420751,
-        "codex:cli": 55390213,
-        "claude_code:main": 5826407
-      }
-    },
-    "2026-06-06": {
-      "input_tokens": 18972731,
-      "output_tokens": 63862,
-      "cache_read_tokens": 18762304,
-      "cache_write_tokens": 0,
-      "reasoning_tokens": 9232,
-      "total_tokens": 37808129,
-      "sessions": 183,
-      "tools": {
-        "codex": 37607625,
-        "claude_code": 200504
-      },
-      "agents": {
-        "codex:vscode": 37607625,
-        "claude_code:main": 200504
-      }
-    },
-    "2026-06-05": {
-      "input_tokens": 316782,
-      "output_tokens": 3285,
-      "cache_read_tokens": 328192,
-      "cache_write_tokens": 0,
-      "reasoning_tokens": 426,
-      "total_tokens": 648685,
-      "sessions": 19,
-      "tools": {
-        "codex": 545167,
-        "claude_code": 103518
-      },
-      "agents": {
-        "codex:cli": 545167,
-        "claude_code:main": 103518
-      }
-    },
-    "2026-06-02": {
-      "input_tokens": 493738,
-      "output_tokens": 7847,
-      "cache_read_tokens": 406912,
-      "cache_write_tokens": 0,
-      "reasoning_tokens": 4567,
-      "total_tokens": 913064,
-      "sessions": 17,
-      "tools": {
-        "codex": 913064
-      },
-      "agents": {
-        "codex:cli": 913064
-      }
-    },
-    "2026-05-30": {
-      "input_tokens": 18371442,
-      "output_tokens": 57321,
-      "cache_read_tokens": 17404416,
-      "cache_write_tokens": 0,
-      "reasoning_tokens": 24343,
-      "total_tokens": 35857522,
-      "sessions": 148,
-      "tools": {
-        "codex": 35857522
-      },
-      "agents": {
-        "codex:vscode": 35857522
-      }
-    },
-    "2026-05-29": {
-      "input_tokens": 102958,
-      "output_tokens": 1079,
-      "cache_read_tokens": 85376,
-      "cache_write_tokens": 0,
-      "reasoning_tokens": 33,
-      "total_tokens": 189446,
-      "sessions": 5,
-      "tools": {
-        "codex": 189446
-      },
-      "agents": {
-        "codex:vscode": 189446
-      }
-    },
-    "2026-05-31": {
-      "input_tokens": 14804676,
-      "output_tokens": 35861,
-      "cache_read_tokens": 13928320,
-      "cache_write_tokens": 0,
-      "reasoning_tokens": 15647,
-      "total_tokens": 28784504,
-      "sessions": 101,
-      "tools": {
-        "codex": 28784504
-      },
-      "agents": {
-        "codex:vscode": 28784504
-      }
-    },
-    "2026-06-01": {
-      "input_tokens": 8474090,
-      "output_tokens": 30146,
-      "cache_read_tokens": 7740672,
-      "cache_write_tokens": 0,
-      "reasoning_tokens": 15257,
-      "total_tokens": 16260165,
-      "sessions": 82,
-      "tools": {
-        "codex": 16260165
-      },
-      "agents": {
-        "codex:vscode": 16260165
-      }
-    },
-    "2026-05-28": {
-      "input_tokens": 70903,
-      "output_tokens": 1141,
-      "cache_read_tokens": 43520,
-      "cache_write_tokens": 0,
-      "reasoning_tokens": 136,
-      "total_tokens": 115700,
-      "sessions": 4,
-      "tools": {
-        "codex": 115700
-      },
-      "agents": {
-        "codex:cli": 115700
-      }
-    },
-    "2026-05-27": {
-      "input_tokens": 588137,
-      "output_tokens": 7065,
-      "cache_read_tokens": 510208,
-      "cache_write_tokens": 0,
-      "reasoning_tokens": 1844,
-      "total_tokens": 1107254,
-      "sessions": 22,
-      "tools": {
-        "codex": 1107254
-      },
-      "agents": {
-        "codex:vscode": 1107254
-      }
-    },
-    "2026-05-26": {
-      "input_tokens": 1725284,
-      "output_tokens": 13976,
-      "cache_read_tokens": 1570176,
-      "cache_write_tokens": 0,
-      "reasoning_tokens": 5213,
-      "total_tokens": 3314649,
-      "sessions": 49,
-      "tools": {
-        "codex": 3314649
-      },
-      "agents": {
-        "codex:vscode": 3314649
-      }
-    },
-    "2026-05-24": {
-      "input_tokens": 5056196,
-      "output_tokens": 43269,
-      "cache_read_tokens": 4398592,
-      "cache_write_tokens": 0,
-      "reasoning_tokens": 14859,
-      "total_tokens": 9512916,
-      "sessions": 136,
-      "tools": {
-        "codex": 9512916
-      },
-      "agents": {
-        "codex:cli": 9512916
-      }
-    },
-    "2026-05-25": {
-      "input_tokens": 2113185,
-      "output_tokens": 6969,
-      "cache_read_tokens": 1921920,
-      "cache_write_tokens": 0,
-      "reasoning_tokens": 2645,
-      "total_tokens": 4044719,
-      "sessions": 21,
-      "tools": {
-        "codex": 4044719
-      },
-      "agents": {
-        "codex:cli": 4044719
+        "claude_code:main": 2672927
       }
     },
     "2026-06-10": {
-      "input_tokens": 98678,
-      "output_tokens": 3542,
-      "cache_read_tokens": 244288,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_read_tokens": 0,
       "cache_write_tokens": 0,
       "reasoning_tokens": 0,
       "total_tokens": 346508,
-      "sessions": 4,
+      "sessions": 0,
       "tools": {
         "claude_code": 346508
       },
@@ -327,14 +147,30 @@
         "claude_code:main": 346508
       }
     },
-    "2026-06-12": {
-      "input_tokens": 1739665,
-      "output_tokens": 102982,
-      "cache_read_tokens": 90024896,
+    "2026-06-11": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_read_tokens": 0,
       "cache_write_tokens": 0,
-      "reasoning_tokens": 25578,
+      "reasoning_tokens": 0,
+      "total_tokens": 3041770,
+      "sessions": 0,
+      "tools": {
+        "mimocode": 3041770
+      },
+      "agents": {
+        "mimocode:main": 2234307,
+        "mimocode:checkpoint-writer-1": 807463
+      }
+    },
+    "2026-06-12": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 0,
       "total_tokens": 91893121,
-      "sessions": 568,
+      "sessions": 0,
       "tools": {
         "claude_code": 323308,
         "mimocode": 91569813
@@ -345,20 +181,20 @@
         "mimocode:checkpoint-writer-1": 6311610
       }
     },
-    "2026-06-11": {
-      "input_tokens": 237185,
-      "output_tokens": 26315,
-      "cache_read_tokens": 2771648,
+    "2026-06-13": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_read_tokens": 0,
       "cache_write_tokens": 0,
-      "reasoning_tokens": 6622,
-      "total_tokens": 3041770,
-      "sessions": 62,
+      "reasoning_tokens": 0,
+      "total_tokens": 20593150,
+      "sessions": 0,
       "tools": {
-        "mimocode": 3041770
+        "mimocode": 20593150
       },
       "agents": {
-        "mimocode:main": 2234307,
-        "mimocode:checkpoint-writer-1": 807463
+        "mimocode:main": 19133579,
+        "mimocode:checkpoint-writer-1": 1459571
       }
     }
   }

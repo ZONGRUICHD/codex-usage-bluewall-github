@@ -1,17 +1,93 @@
 {
-  "schema_version": 2,
-  "generated_at": "2026-07-08T01:15:37.845425+08:00",
+  "schema_version": 3,
+  "generated_at": "2026-07-17T01:32:38.701359+08:00",
   "device": "windows-main",
+  "token_accounting": {
+    "codex_total": "payload.total_tokens or input_tokens + output_tokens",
+    "codex_cache_and_reasoning": "diagnostic subsets, not added to total"
+  },
   "tools_scanned": [
     "codex"
   ],
   "per_tool_summary": {
-    "codex": 1496556465
+    "codex": 8397658213
   },
   "per_agent_summary": {
-    "codex:vscode": 1476663059,
-    "codex:cli": 18818938,
-    "codex:exec": 1074468
+    "codex:Hooke": 20215944,
+    "codex:Hubble": 154975339,
+    "codex:Arendt": 219145098,
+    "codex:Franklin": 18189900,
+    "codex:Singer": 17614780,
+    "codex:Bernoulli": 137127444,
+    "codex:Sagan": 422510434,
+    "codex:Halley": 194761209,
+    "codex:Gauss": 410303073,
+    "codex:Meitner": 143356202,
+    "codex:Raman": 4922415,
+    "codex:Beauvoir": 5744211,
+    "codex:Curie": 249242836,
+    "codex:vscode": 1615736848,
+    "codex:Hegel": 267069128,
+    "codex:Ptolemy": 123039117,
+    "codex:Noether": 120781234,
+    "codex:Boole": 253203908,
+    "codex:Carson": 102880989,
+    "codex:Rawls": 103900387,
+    "codex:Nash": 92495205,
+    "codex:Poincare": 93091935,
+    "codex:Hume": 189383074,
+    "codex:Euclid": 89767804,
+    "codex:Gibbs": 87111015,
+    "codex:Boyle": 264158960,
+    "codex:Kepler": 70625933,
+    "codex:Ohm": 74600807,
+    "codex:Laplace": 148112783,
+    "codex:Schrodinger": 204556707,
+    "codex:James": 41428619,
+    "codex:Einstein": 41745299,
+    "codex:Kuhn": 24703933,
+    "codex:Galileo": 165582336,
+    "codex:Pascal": 4280703,
+    "codex:Lovelace": 4236058,
+    "codex:Planck": 473506,
+    "codex:Darwin": 8744289,
+    "codex:Heisenberg": 191231889,
+    "codex:Averroes": 3260449,
+    "codex:Wegener": 17528500,
+    "codex:Pauli": 1773009,
+    "codex:Copernicus": 623317,
+    "codex:Mencius": 206983590,
+    "codex:Zeno": 15908247,
+    "codex:Sartre": 15520250,
+    "codex:Bacon": 166583318,
+    "codex:Anscombe": 316701180,
+    "codex:Herschel": 154598604,
+    "codex:Lorentz": 162518129,
+    "codex:Turing": 10236413,
+    "codex:Chandrasekhar": 28686,
+    "codex:Nietzsche": 109957740,
+    "codex:Mendel": 145362135,
+    "codex:Helmholtz": 84423560,
+    "codex:Goodall": 76275467,
+    "codex:Lagrange": 102791992,
+    "codex:Locke": 104231939,
+    "codex:Kierkegaard": 36187914,
+    "codex:Kant": 20370427,
+    "codex:Confucius": 9586804,
+    "codex:Dalton": 9539705,
+    "codex:Volta": 67561916,
+    "codex:Peirce": 62668235,
+    "codex:Dirac": 4395150,
+    "codex:Harvey": 3039079,
+    "codex:Fermat": 45793603,
+    "codex:Hilbert": 43226091,
+    "codex:Euler": 2181726,
+    "codex:Godel": 892987,
+    "codex:Russell": 445067,
+    "codex:Mill": 157221,
+    "codex:McClintock": 4811625,
+    "codex:cli": 9841442,
+    "codex:exec": 601345
   },
   "scan_status": {
     "codex": {
@@ -20,42 +96,282 @@
     }
   },
   "statistics": {
-    "total_tokens": 1496556465,
-    "peak_day": "2026-06-28",
-    "peak_tokens": 180148955,
-    "current_streak": 7,
-    "longest_streak": 9,
-    "total_days_active": 45
+    "total_tokens": 8397658213,
+    "peak_day": "2026-07-14",
+    "peak_tokens": 2634839373,
+    "current_streak": 16,
+    "longest_streak": 16,
+    "total_days_active": 54
   },
   "daily_usage": {
+    "2026-07-17": {
+      "input_tokens": 1298452676,
+      "output_tokens": 4192280,
+      "cache_read_tokens": 1253676928,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 1665414,
+      "total_tokens": 1302644956,
+      "sessions": 7961,
+      "tools": {
+        "codex": 1302644956
+      },
+      "agents": {
+        "codex:Hooke": 20133148,
+        "codex:Hubble": 21898132,
+        "codex:Arendt": 149732402,
+        "codex:Franklin": 18006027,
+        "codex:Singer": 17490490,
+        "codex:Bernoulli": 18294742,
+        "codex:Sagan": 195148840,
+        "codex:Halley": 194761209,
+        "codex:Gauss": 195061858,
+        "codex:Meitner": 143356202,
+        "codex:Raman": 4922415,
+        "codex:Beauvoir": 2812674,
+        "codex:Curie": 139165946,
+        "codex:vscode": 49380791,
+        "codex:Hegel": 132480080
+      }
+    },
+    "2026-07-16": {
+      "input_tokens": 1836481598,
+      "output_tokens": 6239829,
+      "cache_read_tokens": 1759110144,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 2286116,
+      "total_tokens": 1842721427,
+      "sessions": 12281,
+      "tools": {
+        "codex": 1842721427
+      },
+      "agents": {
+        "codex:Ptolemy": 123039117,
+        "codex:Noether": 120552910,
+        "codex:Boole": 120599424,
+        "codex:Bernoulli": 112482648,
+        "codex:Carson": 102880989,
+        "codex:Rawls": 103900387,
+        "codex:Nash": 92495205,
+        "codex:Poincare": 93091935,
+        "codex:Hume": 87936270,
+        "codex:Euclid": 89767804,
+        "codex:Gibbs": 87111015,
+        "codex:Boyle": 84731688,
+        "codex:Sagan": 83615158,
+        "codex:Kepler": 70625933,
+        "codex:Ohm": 74600807,
+        "codex:Laplace": 69688061,
+        "codex:Schrodinger": 41247082,
+        "codex:James": 41428619,
+        "codex:Einstein": 41745299,
+        "codex:vscode": 140517031,
+        "codex:Kuhn": 24703933,
+        "codex:Galileo": 24913736,
+        "codex:Pascal": 4280703,
+        "codex:Lovelace": 2492990,
+        "codex:Arendt": 3799177,
+        "codex:Planck": 473506
+      }
+    },
+    "2026-07-15": {
+      "input_tokens": 1566435301,
+      "output_tokens": 4904997,
+      "cache_read_tokens": 1524389504,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 2103629,
+      "total_tokens": 1571340298,
+      "sessions": 12328,
+      "tools": {
+        "codex": 1571340298
+      },
+      "agents": {
+        "codex:Darwin": 8594820,
+        "codex:Heisenberg": 180373358,
+        "codex:Bernoulli": 6350054,
+        "codex:Averroes": 3260449,
+        "codex:vscode": 120399386,
+        "codex:Wegener": 17528500,
+        "codex:Curie": 17127406,
+        "codex:Pauli": 1773009,
+        "codex:Copernicus": 623317,
+        "codex:Laplace": 3150591,
+        "codex:Noether": 228324,
+        "codex:Mencius": 178549525,
+        "codex:Boyle": 179427272,
+        "codex:Zeno": 15908247,
+        "codex:Sartre": 15406043,
+        "codex:Schrodinger": 163309625,
+        "codex:Bacon": 166583318,
+        "codex:Anscombe": 165472432,
+        "codex:Herschel": 154598604,
+        "codex:Lorentz": 162439605,
+        "codex:Turing": 10236413
+      }
+    },
+    "2026-07-14": {
+      "input_tokens": 2626549104,
+      "output_tokens": 8290269,
+      "cache_read_tokens": 2555701248,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 3538702,
+      "total_tokens": 2634839373,
+      "sessions": 20019,
+      "tools": {
+        "codex": 2634839373
+      },
+      "agents": {
+        "codex:Mencius": 28434065,
+        "codex:Hooke": 82796,
+        "codex:Franklin": 183873,
+        "codex:Chandrasekhar": 28686,
+        "codex:vscode": 282123466,
+        "codex:Darwin": 149469,
+        "codex:Lorentz": 78524,
+        "codex:Anscombe": 151228748,
+        "codex:Nietzsche": 109957740,
+        "codex:Galileo": 140668600,
+        "codex:Curie": 92949484,
+        "codex:Mendel": 145362135,
+        "codex:Sagan": 143746436,
+        "codex:Hubble": 133077207,
+        "codex:Gauss": 215241215,
+        "codex:Helmholtz": 84423560,
+        "codex:Hegel": 134589048,
+        "codex:Boole": 132604484,
+        "codex:Goodall": 76275467,
+        "codex:Laplace": 75274131,
+        "codex:Hume": 101446804,
+        "codex:Lagrange": 102791992,
+        "codex:Locke": 104231939,
+        "codex:Kierkegaard": 36187914,
+        "codex:Kant": 20370427,
+        "codex:Confucius": 9586804,
+        "codex:Dalton": 9539705,
+        "codex:Heisenberg": 10858531,
+        "codex:Volta": 67561916,
+        "codex:Arendt": 65613519,
+        "codex:Peirce": 62668235,
+        "codex:Dirac": 941471,
+        "codex:Harvey": 3039079,
+        "codex:Lovelace": 1743068,
+        "codex:Fermat": 45793603,
+        "codex:Hilbert": 43226091,
+        "codex:Euler": 2181726,
+        "codex:Godel": 433787,
+        "codex:Russell": 143628
+      }
+    },
+    "2026-07-13": {
+      "input_tokens": 47384255,
+      "output_tokens": 270060,
+      "cache_read_tokens": 44772352,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 86023,
+      "total_tokens": 47654315,
+      "sessions": 493,
+      "tools": {
+        "codex": 47654315
+      },
+      "agents": {
+        "codex:vscode": 47654315
+      }
+    },
+    "2026-07-12": {
+      "input_tokens": 21492283,
+      "output_tokens": 206636,
+      "cache_read_tokens": 19921024,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 56971,
+      "total_tokens": 21698919,
+      "sessions": 279,
+      "tools": {
+        "codex": 21698919
+      },
+      "agents": {
+        "codex:vscode": 21698919
+      }
+    },
+    "2026-07-11": {
+      "input_tokens": 86992181,
+      "output_tokens": 234966,
+      "cache_read_tokens": 83358208,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 82336,
+      "total_tokens": 87227147,
+      "sessions": 535,
+      "tools": {
+        "codex": 87227147
+      },
+      "agents": {
+        "codex:vscode": 87227147
+      }
+    },
+    "2026-07-10": {
+      "input_tokens": 75535152,
+      "output_tokens": 177813,
+      "cache_read_tokens": 70865536,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 70756,
+      "total_tokens": 75712965,
+      "sessions": 555,
+      "tools": {
+        "codex": 75712965
+      },
+      "agents": {
+        "codex:Sartre": 114207,
+        "codex:Mill": 157221,
+        "codex:Godel": 459200,
+        "codex:Russell": 301439,
+        "codex:Dirac": 3453679,
+        "codex:Singer": 124290,
+        "codex:Beauvoir": 2931537,
+        "codex:McClintock": 4811625,
+        "codex:vscode": 63359767
+      }
+    },
+    "2026-07-09": {
+      "input_tokens": 31010756,
+      "output_tokens": 118885,
+      "cache_read_tokens": 29456000,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 41851,
+      "total_tokens": 31129641,
+      "sessions": 247,
+      "tools": {
+        "codex": 31129641
+      },
+      "agents": {
+        "codex:vscode": 31129641
+      }
+    },
+    "2026-07-08": {
+      "input_tokens": 6725867,
+      "output_tokens": 50886,
+      "cache_read_tokens": 6001536,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 23303,
+      "total_tokens": 6776753,
+      "sessions": 81,
+      "tools": {
+        "codex": 6776753
+      },
+      "agents": {
+        "codex:vscode": 6776753
+      }
+    },
     "2026-07-07": {
       "input_tokens": 853642,
       "output_tokens": 21538,
       "cache_read_tokens": 653952,
       "cache_write_tokens": 0,
       "reasoning_tokens": 9865,
-      "total_tokens": 1538997,
+      "total_tokens": 875180,
       "sessions": 23,
       "tools": {
-        "codex": 1538997
+        "codex": 875180
       },
       "agents": {
-        "codex:vscode": 1538997
-      }
-    },
-    "2026-07-08": {
-      "input_tokens": 830794,
-      "output_tokens": 7720,
-      "cache_read_tokens": 752256,
-      "cache_write_tokens": 0,
-      "reasoning_tokens": 2556,
-      "total_tokens": 1593326,
-      "sessions": 15,
-      "tools": {
-        "codex": 1593326
-      },
-      "agents": {
-        "codex:vscode": 1593326
+        "codex:vscode": 875180
       }
     },
     "2026-07-06": {
@@ -64,13 +380,13 @@
       "cache_read_tokens": 3507328,
       "cache_write_tokens": 0,
       "reasoning_tokens": 11915,
-      "total_tokens": 7628806,
+      "total_tokens": 4109563,
       "sessions": 35,
       "tools": {
-        "codex": 7628806
+        "codex": 4109563
       },
       "agents": {
-        "codex:vscode": 7628806
+        "codex:vscode": 4109563
       }
     },
     "2026-07-05": {
@@ -79,13 +395,13 @@
       "cache_read_tokens": 16691072,
       "cache_write_tokens": 0,
       "reasoning_tokens": 36312,
-      "total_tokens": 34987949,
+      "total_tokens": 18260565,
       "sessions": 173,
       "tools": {
-        "codex": 34987949
+        "codex": 18260565
       },
       "agents": {
-        "codex:vscode": 34987949
+        "codex:vscode": 18260565
       }
     },
     "2026-07-03": {
@@ -94,13 +410,13 @@
       "cache_read_tokens": 24643072,
       "cache_write_tokens": 0,
       "reasoning_tokens": 59572,
-      "total_tokens": 52349387,
+      "total_tokens": 27646743,
       "sessions": 248,
       "tools": {
-        "codex": 52349387
+        "codex": 27646743
       },
       "agents": {
-        "codex:vscode": 52349387
+        "codex:vscode": 27646743
       }
     },
     "2026-07-04": {
@@ -109,13 +425,13 @@
       "cache_read_tokens": 23025536,
       "cache_write_tokens": 0,
       "reasoning_tokens": 29496,
-      "total_tokens": 47651912,
+      "total_tokens": 24596880,
       "sessions": 173,
       "tools": {
-        "codex": 47651912
+        "codex": 24596880
       },
       "agents": {
-        "codex:vscode": 47651912
+        "codex:vscode": 24596880
       }
     },
     "2026-07-02": {
@@ -124,13 +440,13 @@
       "cache_read_tokens": 14544896,
       "cache_write_tokens": 0,
       "reasoning_tokens": 23600,
-      "total_tokens": 30362166,
+      "total_tokens": 15793670,
       "sessions": 128,
       "tools": {
-        "codex": 30362166
+        "codex": 15793670
       },
       "agents": {
-        "codex:vscode": 30362166
+        "codex:vscode": 15793670
       }
     },
     "2026-06-28": {
@@ -139,13 +455,13 @@
       "cache_read_tokens": 86947072,
       "cache_write_tokens": 0,
       "reasoning_tokens": 91752,
-      "total_tokens": 180148955,
+      "total_tokens": 93110131,
       "sessions": 690,
       "tools": {
-        "codex": 180148955
+        "codex": 93110131
       },
       "agents": {
-        "codex:vscode": 180148955
+        "codex:vscode": 93110131
       }
     },
     "2026-06-27": {
@@ -154,13 +470,13 @@
       "cache_read_tokens": 83002368,
       "cache_write_tokens": 0,
       "reasoning_tokens": 106799,
-      "total_tokens": 173107686,
+      "total_tokens": 89998519,
       "sessions": 679,
       "tools": {
-        "codex": 173107686
+        "codex": 89998519
       },
       "agents": {
-        "codex:vscode": 173107686
+        "codex:vscode": 89998519
       }
     },
     "2026-06-23": {
@@ -169,13 +485,13 @@
       "cache_read_tokens": 43275520,
       "cache_write_tokens": 0,
       "reasoning_tokens": 32273,
-      "total_tokens": 89186731,
+      "total_tokens": 45878938,
       "sessions": 302,
       "tools": {
-        "codex": 89186731
+        "codex": 45878938
       },
       "agents": {
-        "codex:vscode": 89186731
+        "codex:vscode": 45878938
       }
     },
     "2026-06-25": {
@@ -184,13 +500,13 @@
       "cache_read_tokens": 1813632,
       "cache_write_tokens": 0,
       "reasoning_tokens": 4880,
-      "total_tokens": 3992722,
+      "total_tokens": 2174210,
       "sessions": 27,
       "tools": {
-        "codex": 3992722
+        "codex": 2174210
       },
       "agents": {
-        "codex:vscode": 3992722
+        "codex:vscode": 2174210
       }
     },
     "2026-06-22": {
@@ -199,13 +515,13 @@
       "cache_read_tokens": 6671360,
       "cache_write_tokens": 0,
       "reasoning_tokens": 20202,
-      "total_tokens": 14139836,
+      "total_tokens": 7448274,
       "sessions": 99,
       "tools": {
-        "codex": 14139836
+        "codex": 7448274
       },
       "agents": {
-        "codex:vscode": 14139836
+        "codex:vscode": 7448274
       }
     },
     "2026-06-19": {
@@ -214,13 +530,13 @@
       "cache_read_tokens": 1811712,
       "cache_write_tokens": 0,
       "reasoning_tokens": 4903,
-      "total_tokens": 3726928,
+      "total_tokens": 1910313,
       "sessions": 30,
       "tools": {
-        "codex": 3726928
+        "codex": 1910313
       },
       "agents": {
-        "codex:vscode": 3726928
+        "codex:vscode": 1910313
       }
     },
     "2026-06-17": {
@@ -229,13 +545,13 @@
       "cache_read_tokens": 2098816,
       "cache_write_tokens": 0,
       "reasoning_tokens": 4804,
-      "total_tokens": 4526301,
+      "total_tokens": 2422681,
       "sessions": 39,
       "tools": {
-        "codex": 4526301
+        "codex": 2422681
       },
       "agents": {
-        "codex:vscode": 4526301
+        "codex:vscode": 2422681
       }
     },
     "2026-06-16": {
@@ -244,13 +560,13 @@
       "cache_read_tokens": 165376,
       "cache_write_tokens": 0,
       "reasoning_tokens": 1194,
-      "total_tokens": 358002,
+      "total_tokens": 191432,
       "sessions": 8,
       "tools": {
-        "codex": 358002
+        "codex": 191432
       },
       "agents": {
-        "codex:vscode": 358002
+        "codex:vscode": 191432
       }
     },
     "2026-06-12": {
@@ -259,13 +575,13 @@
       "cache_read_tokens": 17675136,
       "cache_write_tokens": 0,
       "reasoning_tokens": 26223,
-      "total_tokens": 36480077,
+      "total_tokens": 18778718,
       "sessions": 184,
       "tools": {
-        "codex": 36480077
+        "codex": 18778718
       },
       "agents": {
-        "codex:vscode": 36480077
+        "codex:vscode": 18778718
       }
     },
     "2026-06-10": {
@@ -274,14 +590,14 @@
       "cache_read_tokens": 6796608,
       "cache_write_tokens": 0,
       "reasoning_tokens": 16340,
-      "total_tokens": 14052887,
+      "total_tokens": 7239939,
       "sessions": 160,
       "tools": {
-        "codex": 14052887
+        "codex": 7239939
       },
       "agents": {
-        "codex:cli": 12687444,
-        "codex:vscode": 1365443
+        "codex:cli": 6506541,
+        "codex:vscode": 733398
       }
     },
     "2026-06-03": {
@@ -290,13 +606,13 @@
       "cache_read_tokens": 28742656,
       "cache_write_tokens": 0,
       "reasoning_tokens": 37978,
-      "total_tokens": 59611108,
+      "total_tokens": 30830474,
       "sessions": 308,
       "tools": {
-        "codex": 59611108
+        "codex": 30830474
       },
       "agents": {
-        "codex:vscode": 59611108
+        "codex:vscode": 30830474
       }
     },
     "2026-06-02": {
@@ -305,13 +621,13 @@
       "cache_read_tokens": 1081984,
       "cache_write_tokens": 0,
       "reasoning_tokens": 62181,
-      "total_tokens": 2410947,
+      "total_tokens": 1266782,
       "sessions": 38,
       "tools": {
-        "codex": 2410947
+        "codex": 1266782
       },
       "agents": {
-        "codex:cli": 2410947
+        "codex:cli": 1266782
       }
     },
     "2026-06-01": {
@@ -320,13 +636,13 @@
       "cache_read_tokens": 10933696,
       "cache_write_tokens": 0,
       "reasoning_tokens": 22094,
-      "total_tokens": 22886255,
+      "total_tokens": 11930465,
       "sessions": 162,
       "tools": {
-        "codex": 22886255
+        "codex": 11930465
       },
       "agents": {
-        "codex:vscode": 22886255
+        "codex:vscode": 11930465
       }
     },
     "2026-05-31": {
@@ -335,13 +651,13 @@
       "cache_read_tokens": 1385600,
       "cache_write_tokens": 0,
       "reasoning_tokens": 4026,
-      "total_tokens": 3069586,
+      "total_tokens": 1679960,
       "sessions": 35,
       "tools": {
-        "codex": 3069586
+        "codex": 1679960
       },
       "agents": {
-        "codex:cli": 3069586
+        "codex:cli": 1679960
       }
     },
     "2026-05-28": {
@@ -350,13 +666,13 @@
       "cache_read_tokens": 4580352,
       "cache_write_tokens": 0,
       "reasoning_tokens": 10764,
-      "total_tokens": 9931925,
+      "total_tokens": 5340809,
       "sessions": 64,
       "tools": {
-        "codex": 9931925
+        "codex": 5340809
       },
       "agents": {
-        "codex:vscode": 9931925
+        "codex:vscode": 5340809
       }
     },
     "2026-05-29": {
@@ -365,13 +681,13 @@
       "cache_read_tokens": 3036032,
       "cache_write_tokens": 0,
       "reasoning_tokens": 2956,
-      "total_tokens": 6296428,
+      "total_tokens": 3257440,
       "sessions": 17,
       "tools": {
-        "codex": 6296428
+        "codex": 3257440
       },
       "agents": {
-        "codex:vscode": 6296428
+        "codex:vscode": 3257440
       }
     },
     "2026-05-27": {
@@ -380,13 +696,13 @@
       "cache_read_tokens": 813312,
       "cache_write_tokens": 0,
       "reasoning_tokens": 3469,
-      "total_tokens": 1721626,
+      "total_tokens": 904845,
       "sessions": 22,
       "tools": {
-        "codex": 1721626
+        "codex": 904845
       },
       "agents": {
-        "codex:vscode": 1721626
+        "codex:vscode": 904845
       }
     },
     "2026-05-25": {
@@ -395,13 +711,13 @@
       "cache_read_tokens": 27784064,
       "cache_write_tokens": 0,
       "reasoning_tokens": 26761,
-      "total_tokens": 58646104,
+      "total_tokens": 30835279,
       "sessions": 245,
       "tools": {
-        "codex": 58646104
+        "codex": 30835279
       },
       "agents": {
-        "codex:vscode": 58646104
+        "codex:vscode": 30835279
       }
     },
     "2026-05-23": {
@@ -410,13 +726,13 @@
       "cache_read_tokens": 12764416,
       "cache_write_tokens": 0,
       "reasoning_tokens": 12850,
-      "total_tokens": 26366828,
+      "total_tokens": 13589562,
       "sessions": 102,
       "tools": {
-        "codex": 26366828
+        "codex": 13589562
       },
       "agents": {
-        "codex:vscode": 26366828
+        "codex:vscode": 13589562
       }
     },
     "2026-05-22": {
@@ -425,14 +741,14 @@
       "cache_read_tokens": 12921728,
       "cache_write_tokens": 0,
       "reasoning_tokens": 18135,
-      "total_tokens": 27618167,
+      "total_tokens": 14678304,
       "sessions": 117,
       "tools": {
-        "codex": 27618167
+        "codex": 14678304
       },
       "agents": {
-        "codex:cli": 273870,
-        "codex:vscode": 27344297
+        "codex:cli": 169630,
+        "codex:vscode": 14508674
       }
     },
     "2026-05-21": {
@@ -441,13 +757,13 @@
       "cache_read_tokens": 32594560,
       "cache_write_tokens": 0,
       "reasoning_tokens": 36020,
-      "total_tokens": 67319097,
+      "total_tokens": 34688517,
       "sessions": 311,
       "tools": {
-        "codex": 67319097
+        "codex": 34688517
       },
       "agents": {
-        "codex:vscode": 67319097
+        "codex:vscode": 34688517
       }
     },
     "2026-05-26": {
@@ -456,13 +772,13 @@
       "cache_read_tokens": 9299840,
       "cache_write_tokens": 0,
       "reasoning_tokens": 7927,
-      "total_tokens": 19539491,
+      "total_tokens": 10231724,
       "sessions": 61,
       "tools": {
-        "codex": 19539491
+        "codex": 10231724
       },
       "agents": {
-        "codex:vscode": 19539491
+        "codex:vscode": 10231724
       }
     },
     "2026-05-20": {
@@ -471,13 +787,13 @@
       "cache_read_tokens": 27471616,
       "cache_write_tokens": 0,
       "reasoning_tokens": 35792,
-      "total_tokens": 56320523,
+      "total_tokens": 28813115,
       "sessions": 266,
       "tools": {
-        "codex": 56320523
+        "codex": 28813115
       },
       "agents": {
-        "codex:vscode": 56320523
+        "codex:vscode": 28813115
       }
     },
     "2026-05-19": {
@@ -486,13 +802,13 @@
       "cache_read_tokens": 19062400,
       "cache_write_tokens": 0,
       "reasoning_tokens": 15334,
-      "total_tokens": 38816269,
+      "total_tokens": 19738535,
       "sessions": 147,
       "tools": {
-        "codex": 38816269
+        "codex": 19738535
       },
       "agents": {
-        "codex:vscode": 38816269
+        "codex:vscode": 19738535
       }
     },
     "2026-05-18": {
@@ -501,13 +817,13 @@
       "cache_read_tokens": 2698624,
       "cache_write_tokens": 0,
       "reasoning_tokens": 2022,
-      "total_tokens": 5562567,
+      "total_tokens": 2861921,
       "sessions": 45,
       "tools": {
-        "codex": 5562567
+        "codex": 2861921
       },
       "agents": {
-        "codex:vscode": 5562567
+        "codex:vscode": 2861921
       }
     },
     "2026-05-17": {
@@ -516,13 +832,13 @@
       "cache_read_tokens": 7552,
       "cache_write_tokens": 0,
       "reasoning_tokens": 414,
-      "total_tokens": 38850,
+      "total_tokens": 30884,
       "sessions": 1,
       "tools": {
-        "codex": 38850
+        "codex": 30884
       },
       "agents": {
-        "codex:vscode": 38850
+        "codex:vscode": 30884
       }
     },
     "2026-05-16": {
@@ -531,13 +847,13 @@
       "cache_read_tokens": 3273600,
       "cache_write_tokens": 0,
       "reasoning_tokens": 4096,
-      "total_tokens": 6803314,
+      "total_tokens": 3525618,
       "sessions": 53,
       "tools": {
-        "codex": 6803314
+        "codex": 3525618
       },
       "agents": {
-        "codex:vscode": 6803314
+        "codex:vscode": 3525618
       }
     },
     "2026-05-15": {
@@ -546,13 +862,13 @@
       "cache_read_tokens": 6111232,
       "cache_write_tokens": 0,
       "reasoning_tokens": 7423,
-      "total_tokens": 12628659,
+      "total_tokens": 6510004,
       "sessions": 60,
       "tools": {
-        "codex": 12628659
+        "codex": 6510004
       },
       "agents": {
-        "codex:vscode": 12628659
+        "codex:vscode": 6510004
       }
     },
     "2026-05-13": {
@@ -561,13 +877,13 @@
       "cache_read_tokens": 30869760,
       "cache_write_tokens": 0,
       "reasoning_tokens": 34122,
-      "total_tokens": 64411272,
+      "total_tokens": 33507390,
       "sessions": 246,
       "tools": {
-        "codex": 64411272
+        "codex": 33507390
       },
       "agents": {
-        "codex:vscode": 64411272
+        "codex:vscode": 33507390
       }
     },
     "2026-05-12": {
@@ -576,14 +892,14 @@
       "cache_read_tokens": 40890496,
       "cache_write_tokens": 0,
       "reasoning_tokens": 61230,
-      "total_tokens": 85849564,
+      "total_tokens": 44897838,
       "sessions": 407,
       "tools": {
-        "codex": 85849564
+        "codex": 44897838
       },
       "agents": {
-        "codex:vscode": 84897041,
-        "codex:exec": 952523
+        "codex:vscode": 44367758,
+        "codex:exec": 530080
       }
     },
     "2026-05-11": {
@@ -592,14 +908,14 @@
       "cache_read_tokens": 6797824,
       "cache_write_tokens": 0,
       "reasoning_tokens": 10658,
-      "total_tokens": 14343433,
+      "total_tokens": 7534951,
       "sessions": 116,
       "tools": {
-        "codex": 14343433
+        "codex": 7534951
       },
       "agents": {
-        "codex:vscode": 13966342,
-        "codex:cli": 377091
+        "codex:vscode": 7316422,
+        "codex:cli": 218529
       }
     },
     "2026-05-09": {
@@ -608,14 +924,14 @@
       "cache_read_tokens": 10468608,
       "cache_write_tokens": 0,
       "reasoning_tokens": 21025,
-      "total_tokens": 21762916,
+      "total_tokens": 11273283,
       "sessions": 130,
       "tools": {
-        "codex": 21762916
+        "codex": 11273283
       },
       "agents": {
-        "codex:vscode": 21664063,
-        "codex:exec": 98853
+        "codex:vscode": 11217558,
+        "codex:exec": 55725
       }
     },
     "2026-05-06": {
@@ -624,14 +940,14 @@
       "cache_read_tokens": 17033728,
       "cache_write_tokens": 0,
       "reasoning_tokens": 24340,
-      "total_tokens": 35110704,
+      "total_tokens": 18052636,
       "sessions": 172,
       "tools": {
-        "codex": 35110704
+        "codex": 18052636
       },
       "agents": {
-        "codex:vscode": 35087612,
-        "codex:exec": 23092
+        "codex:vscode": 18037096,
+        "codex:exec": 15540
       }
     },
     "2026-05-07": {
@@ -640,13 +956,13 @@
       "cache_read_tokens": 31135104,
       "cache_write_tokens": 0,
       "reasoning_tokens": 41596,
-      "total_tokens": 64558702,
+      "total_tokens": 33382002,
       "sessions": 253,
       "tools": {
-        "codex": 64558702
+        "codex": 33382002
       },
       "agents": {
-        "codex:vscode": 64558702
+        "codex:vscode": 33382002
       }
     },
     "2026-05-08": {
@@ -655,13 +971,13 @@
       "cache_read_tokens": 7922432,
       "cache_write_tokens": 0,
       "reasoning_tokens": 10089,
-      "total_tokens": 16806318,
+      "total_tokens": 8873797,
       "sessions": 58,
       "tools": {
-        "codex": 16806318
+        "codex": 8873797
       },
       "agents": {
-        "codex:vscode": 16806318
+        "codex:vscode": 8873797
       }
     },
     "2026-05-05": {
@@ -670,13 +986,13 @@
       "cache_read_tokens": 8604544,
       "cache_write_tokens": 0,
       "reasoning_tokens": 16162,
-      "total_tokens": 17761452,
+      "total_tokens": 9140746,
       "sessions": 133,
       "tools": {
-        "codex": 17761452
+        "codex": 9140746
       },
       "agents": {
-        "codex:vscode": 17761452
+        "codex:vscode": 9140746
       }
     },
     "2026-05-04": {
@@ -685,13 +1001,13 @@
       "cache_read_tokens": 25878528,
       "cache_write_tokens": 0,
       "reasoning_tokens": 29220,
-      "total_tokens": 53394679,
+      "total_tokens": 27486931,
       "sessions": 244,
       "tools": {
-        "codex": 53394679
+        "codex": 27486931
       },
       "agents": {
-        "codex:vscode": 53394679
+        "codex:vscode": 27486931
       }
     },
     "2026-05-03": {
@@ -700,13 +1016,13 @@
       "cache_read_tokens": 518272,
       "cache_write_tokens": 0,
       "reasoning_tokens": 5890,
-      "total_tokens": 1137013,
+      "total_tokens": 612851,
       "sessions": 23,
       "tools": {
-        "codex": 1137013
+        "codex": 612851
       },
       "agents": {
-        "codex:vscode": 1137013
+        "codex:vscode": 612851
       }
     }
   }

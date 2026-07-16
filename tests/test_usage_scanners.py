@@ -6,7 +6,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from scripts.merge_devices import merge_daily_usage
-from scripts.render_blue_wall import calculate_activity_streaks, get_color_intensity
 from scripts.scan_all_tools import (
     scan_claude_code,
     scan_codex,
@@ -118,7 +117,7 @@ class UsageScannerTests(unittest.TestCase):
         self.assertEqual(sum(day["total_tokens"] for day in result.daily.values()), 150)
         self.assertEqual(result.agents["cli"], 150)
 
-    def test_codex_matches_desktop_token_accounting_and_counter_resets(self):
+    def test_codex_uses_authoritative_totals_and_preserves_breakdowns(self):
         rollout = self.root / "rollout.jsonl"
         events = []
         for usage in (
@@ -182,7 +181,10 @@ class UsageScannerTests(unittest.TestCase):
         self.assertEqual(usage["cache_read_tokens"], 90)
         self.assertEqual(usage["output_tokens"], 40)
         self.assertEqual(usage["reasoning_tokens"], 10)
-        self.assertEqual(usage["total_tokens"], 300)
+        # cached_input_tokens is included in input_tokens and reasoning tokens
+        # are included in output_tokens, so the authoritative cumulative
+        # totals are 100 -> 150, followed by a reset to 50.
+        self.assertEqual(usage["total_tokens"], 200)
 
     def test_mimocode_counts_subagents_and_excludes_claude_imports(self):
         db_path, connection = self.create_message_db("mimocode.db")
@@ -322,22 +324,6 @@ class UsageScannerTests(unittest.TestCase):
         self.assertEqual(
             merged["agents"], {"codex:cli": 10, "hermes:telegram": 30}
         )
-
-    def test_cloud_activity_extends_calendar_without_adding_tokens(self):
-        statistics = calculate_activity_streaks(
-            {
-                "2026-01-01",
-                "2026-01-02",
-                "2026-01-04",
-                "2026-01-05",
-                "2026-01-06",
-            }
-        )
-        self.assertEqual(statistics["total_days_active"], 5)
-        self.assertEqual(statistics["longest_streak"], 3)
-        self.assertEqual(get_color_intensity(0, 100, 25), "#2878c8")
-        self.assertEqual(get_color_intensity(0, 100, 0), "#161b22")
-
 
 if __name__ == "__main__":
     unittest.main()

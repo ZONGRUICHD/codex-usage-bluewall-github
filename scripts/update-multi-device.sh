@@ -76,7 +76,7 @@ python3 "$SCRIPT_DIR/merge_devices.py" \
     --inputs "${INPUTS[@]}" \
     --output "$PROJECT_DIR/data/ai-usage.json"
 
-python3 "$SCRIPT_DIR/render_blue_wall.py" \
+node "$SCRIPT_DIR/render_blue_wall.js" \
     --data "$PROJECT_DIR/data/ai-usage.json" \
     --output "$PROJECT_DIR/assets/ai-blue-wall.svg" \
     --days "$DAYS"

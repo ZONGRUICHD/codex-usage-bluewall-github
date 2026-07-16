@@ -49,9 +49,10 @@ if ($Inputs.Count -eq 0) {
 }
 
 python "$ScriptDir\merge_devices.py" --inputs $Inputs --output $MergedData
-python "$ScriptDir\render_blue_wall.py" `
+node "$ScriptDir\render_blue_wall.js" `
     --data $MergedData `
     --output $Svg `
-    --days $Days
+    --days $Days `
+    --timezone Asia/Shanghai
 
 Write-Host "Merged $($Inputs.Count) snapshot file(s) into $MergedData"

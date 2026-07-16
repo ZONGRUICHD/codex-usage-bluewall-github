@@ -182,9 +182,12 @@ def codex_cumulative_usage(payload: Any) -> Optional[Dict[str, int]]:
     reasoning_tokens = number(
         usage.get("reasoning_output_tokens", usage.get("reasoning_tokens"))
     )
-    total_tokens = (
-        input_tokens + cache_read_tokens + output_tokens + reasoning_tokens
-    )
+    # Codex reports cached input as a subset of input_tokens and reasoning as a
+    # subset of output_tokens. Prefer the authoritative cumulative total so
+    # those diagnostic breakdowns are not counted twice.
+    total_tokens = number(usage.get("total_tokens"))
+    if total_tokens <= 0:
+        total_tokens = input_tokens + output_tokens
     if total_tokens <= 0:
         return None
 
@@ -607,9 +610,13 @@ def build_output(
     device_name: str,
 ) -> Dict[str, Any]:
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "generated_at": datetime.now().astimezone().isoformat(),
         "device": device_name,
+        "token_accounting": {
+            "codex_total": "payload.total_tokens or input_tokens + output_tokens",
+            "codex_cache_and_reasoning": "diagnostic subsets, not added to total",
+        },
         "tools_scanned": list(tool_data.keys()),
         "per_tool_summary": {
             tool: sum(day["total_tokens"] for day in result.daily.values())
