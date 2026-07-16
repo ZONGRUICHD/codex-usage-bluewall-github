@@ -3,7 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "cd vercel && npm install && npm run build",
-    "vercel-build": "cd vercel && npm install && npm run build"
+    "test": "npm run test:node && npm run test:python",
+    "test:node": "node tests/test_api_svg.js && node --check api/svg.js && node --check scripts/render_blue_wall.js",
+    "test:python": "python -m unittest discover -s tests -v",
+    "render": "node scripts/render_blue_wall.js",
+    "render:check": "node scripts/render_blue_wall.js --check",
+    "verify": "npm test && npm run render:check",
+    "verify:vercel": "npm run test:node && npm run render:check"
+  },
+  "engines": {
+    "node": "24.x"
   }
 }

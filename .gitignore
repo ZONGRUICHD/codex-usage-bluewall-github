@@ -32,6 +32,9 @@ tmp/
 # Config with potential secrets
 config.json
 config.multi-device.json
+.env
+.env.*
+!.env.example
 
 # Keep aggregated data
 !data/ai-usage.json
@@ -39,16 +42,13 @@ config.multi-device.json
 !assets/*.svg
 
 # Vercel
-vercel/node_modules/
-vercel/.next/
-vercel/.vercel/
 .vercel
 
 # Local reference, legacy, and experimental artifacts
 28725606-0CF0-4845-8D9E-7A200ECFABE4.png
 https:--chatgpt.com-backend-api-estuary-content?.txt
 PROJECT_ANALYSIS.md
-index.html
+/index.html
 scripts/extract_codex_usage.js
 scripts/scan_codex.py
 assets/codex-blue-wall.svg
