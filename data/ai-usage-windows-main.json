@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-20T00:16:19.221576+08:00",
+  "generated_at": "2026-07-21T00:17:06.387848+08:00",
   "device": "windows-main",
   "token_accounting": {
     "codex_total": "payload.total_tokens or input_tokens + output_tokens",
@@ -10,10 +10,16 @@
     "codex"
   ],
   "per_tool_summary": {
-    "codex": 27027639436
+    "codex": 28184305869
   },
   "per_agent_summary": {
-    "codex:vscode": 2269227283,
+    "codex:Tesla": 343326776,
+    "codex:Singer": 229119173,
+    "codex:Arendt": 388928784,
+    "codex:Schrodinger": 354808633,
+    "codex:Darwin": 151243622,
+    "codex:Hypatia": 318915442,
+    "codex:vscode": 2466624871,
     "codex:Locke": 635999053,
     "codex:Plato": 580375999,
     "codex:Hilbert": 569435004,
@@ -64,19 +70,15 @@
     "codex:Hubble": 378294274,
     "codex:Einstein": 267778801,
     "codex:Russell": 18697440,
-    "codex:Singer": 53064100,
     "codex:Leibniz": 35131619,
     "codex:Archimedes": 24628209,
     "codex:Lagrange": 110331982,
     "codex:Meitner": 174793905,
     "codex:Bohr": 191225500,
     "codex:Feynman": 180997996,
-    "codex:Hypatia": 170281589,
-    "codex:Tesla": 171281802,
     "codex:Averroes": 160274458,
     "codex:Boyle": 420749528,
     "codex:Hooke": 20215944,
-    "codex:Arendt": 219145098,
     "codex:Bernoulli": 137127444,
     "codex:Halley": 194761209,
     "codex:Curie": 249242836,
@@ -93,12 +95,10 @@
     "codex:Kepler": 70625933,
     "codex:Ohm": 74600807,
     "codex:Laplace": 148112783,
-    "codex:Schrodinger": 204556707,
     "codex:Kuhn": 24703933,
     "codex:Galileo": 165582336,
     "codex:Lovelace": 4236058,
     "codex:Planck": 473506,
-    "codex:Darwin": 8744289,
     "codex:Copernicus": 623317,
     "codex:Zeno": 15908247,
     "codex:Sartre": 15520250,
@@ -119,14 +119,35 @@
     }
   },
   "statistics": {
-    "total_tokens": 27027639436,
+    "total_tokens": 28184305869,
     "peak_day": "2026-07-19",
     "peak_tokens": 10346559471,
     "current_streak": 0,
-    "longest_streak": 18,
-    "total_days_active": 56
+    "longest_streak": 19,
+    "total_days_active": 57
   },
   "daily_usage": {
+    "2026-07-20": {
+      "input_tokens": 1153133557,
+      "output_tokens": 3532876,
+      "cache_read_tokens": 1097510656,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 1024931,
+      "total_tokens": 1156666433,
+      "sessions": 8225,
+      "tools": {
+        "codex": 1156666433
+      },
+      "agents": {
+        "codex:Tesla": 172044974,
+        "codex:Singer": 176055073,
+        "codex:Arendt": 169783686,
+        "codex:Schrodinger": 150251926,
+        "codex:Darwin": 142499333,
+        "codex:Hypatia": 148633853,
+        "codex:vscode": 197397588
+      }
+    },
     "2026-07-19": {
       "input_tokens": 10319297429,
       "output_tokens": 27262042,
