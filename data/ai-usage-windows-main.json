@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-23T00:16:26.760788+08:00",
+  "generated_at": "2026-07-24T00:17:15.647852+08:00",
   "device": "windows-main",
   "token_accounting": {
     "codex_total": "payload.total_tokens or input_tokens + output_tokens",
@@ -10,16 +10,16 @@
     "codex"
   ],
   "per_tool_summary": {
-    "codex": 28186904770
+    "codex": 28186928042
   },
   "per_agent_summary": {
+    "codex:vscode": 2469247044,
     "codex:Tesla": 343326776,
     "codex:Singer": 229119173,
     "codex:Arendt": 388928784,
     "codex:Schrodinger": 354808633,
     "codex:Darwin": 151243622,
     "codex:Hypatia": 318915442,
-    "codex:vscode": 2469223772,
     "codex:Locke": 635999053,
     "codex:Plato": 580375999,
     "codex:Hilbert": 569435004,
@@ -119,14 +119,29 @@
     }
   },
   "statistics": {
-    "total_tokens": 28186904770,
+    "total_tokens": 28186928042,
     "peak_day": "2026-07-19",
     "peak_tokens": 10346559471,
     "current_streak": 0,
     "longest_streak": 19,
-    "total_days_active": 58
+    "total_days_active": 59
   },
   "daily_usage": {
+    "2026-07-23": {
+      "input_tokens": 23260,
+      "output_tokens": 12,
+      "cache_read_tokens": 11008,
+      "cache_write_tokens": 0,
+      "reasoning_tokens": 0,
+      "total_tokens": 23272,
+      "sessions": 1,
+      "tools": {
+        "codex": 23272
+      },
+      "agents": {
+        "codex:vscode": 23272
+      }
+    },
     "2026-07-20": {
       "input_tokens": 1153133557,
       "output_tokens": 3532876,
